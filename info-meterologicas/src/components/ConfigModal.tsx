@@ -1,5 +1,5 @@
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
+import React from 'react';
+import { Modal, Form } from 'react-bootstrap';
 
 
 interface ConfigModalProps {
@@ -15,19 +15,21 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ show, handleClose }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group className="mb-3">
-            <Form.Check
-              type="checkbox"
-              label="Atualização Automática"
-              defaultChecked
+          <Form.Group className="mb-3 d-flex justify-content-between align-items-center" controlId="formAutoUpdate">
+            <Form.Label className="mb-0">Atualização Automática</Form.Label>
+            <Form.Check 
+              type="switch"
+              id="auto-update-switch"
             />
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Tema</Form.Label>
-            <Form.Select>
+          <hr className="border-light"/>
+          <Form.Group className="mb-3 d-flex justify-content-between align-items-center" controlId="formTheme">
+            <Form.Label className="mb-0">Tema</Form.Label>
+            <Form.Select style={{ width: '150px' }} className="bg-dark text-white">
               <option>Automático</option>
-              <option>Claro</option>
-              <option>Escuro</option>
+              <option value="1">Manhã</option>
+              <option value="2">Tarde</option>
+              <option value="3">Noite</option>
             </Form.Select>
           </Form.Group>
         </Form>
