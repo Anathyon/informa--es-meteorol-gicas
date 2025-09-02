@@ -1,0 +1,154 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.manha {
+    --background: linear-gradient(180deg, #998545 0%, #fceb00 30%, #cab707 60%, #998545 100%);
+    --letter-color: #000000;
+    --main-color: linear-gradient(120deg, #ffee00b0, #fdfdfd79);
+    --bg-url: url('./assets/imagens/2.png');
+    --bg-relogio: linear-gradient(#fff23b, #ffffff);
+    --bg-destaque: #00000050;
+    --border-color: #ffffff;
+}
+
+.tarde {
+    --background: linear-gradient(180deg, #661d00 0%, #a14f17 30%, #e45015 60%, #661d00 100%);
+    --letter-color: #ffffff;
+    --main-color: linear-gradient(120deg, #412410a2, #f74e009a);
+    --bg-url: url('./assets/imagens/1.png');
+    --bg-relogio: linear-gradient(#ca620c, #74330b);
+    --bg-destaque: #ffffff7c;
+    --border-color: #000;
+}
+
+.noite {
+    --background: linear-gradient(180deg, #201866 0%, #100d9e 30%, #1a1c7e 60%, #201866 100%);
+    --letter-color: #ffffff;
+    --main-color: linear-gradient(120deg, #3823f3a8, #00000080);
+    --bg-url: url('./assets/imagens/Design sem nome.png');
+    --bg-relogio: linear-gradient(#3735b9, #383838);
+    --bg-destaque: #ffffff7c;
+    --border-color: #ffffff;
+}
+
+body {
+    background-color: #0d1a2f;
+    font-family: Arial, sans-serif;
+    color: var(--letter-color);
+}
+
+.weather-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    transition: background 0.5s ease-in-out;
+}
+
+.glass-container {
+    background: var(--main-color);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    transition: all 0.5s ease;
+}
+
+.glass-container h1, .glass-container h2, .glass-container p {
+    color: var(--letter-color);
+}
+
+.glass-search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 10px 15px;
+    color: var(--letter-color);
+    outline: none;
+    width: 250px;
+    margin-right: 10px;
+}
+
+.glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.glass-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--letter-color);
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background 0.3s ease;
+}
+
+.glass-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.glass-temperature {
+    font-size: 8rem;
+    font-weight: bold;
+    color: var(--letter-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.glass-temperature-small {
+    font-size: 2rem;
+    margin-left: 10px;
+    align-self: flex-start;
+}
+
+.gear-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--letter-color);
+}
+
+.modal-content {
+    background: var(--main-color);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    border: 1px solid var(--border-color);
+    color: var(--letter-color);
+}
+
+.modal-header, .modal-body {
+    border: none;
+}
+
+.modal-title {
+    color: var(--letter-color);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
