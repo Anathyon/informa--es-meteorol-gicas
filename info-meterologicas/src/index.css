@@ -157,3 +157,124 @@
 .btn-close {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
+
+.forecast-container {
+    width: 100%;
+    margin-top: 40px;
+    padding: 20px;
+    border-radius: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    color: var(--letter-color);
+}
+
+.forecast-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.forecast-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 15px 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.forecast-card .forecast-time,
+.forecast-card .forecast-day {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.forecast-card .forecast-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.forecast-card .forecast-temp {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Opcional: Se precisar de rolagem em telas pequenas */
+.overflow-x-auto {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.overflow-x-auto .col {
+    flex: 0 0 auto;
+    width: auto;
+    scroll-snap-align: start;
+}
+
+.air-quality-container {
+    width: 100%;
+    margin-top: 40px;
+    padding: 20px;
+    border-radius: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    color: var(--letter-color);
+}
+
+.air-quality-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.map-card {
+    min-height: 200px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+}
+
+.map-icon {
+    font-size: 3rem;
+    color: var(--letter-color);
+}
+
+.aqi-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    border: 3px solid white;
+}
+
+.air-quality-content .list-group-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--letter-color);
+}
+
+.air-quality-content .list-group-item:first-child {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.air-quality-content .list-group-item:last-child {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
