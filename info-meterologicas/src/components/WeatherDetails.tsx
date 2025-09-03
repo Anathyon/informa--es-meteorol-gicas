@@ -1,119 +1,61 @@
-// src/components/WeatherDetails.tsx
-
 import React from 'react';
+import type { WeatherData } from './WeatherApp';
 
-// Nova interface que espera um objeto 'data' com todas as propriedades
 interface WeatherDetailsProps {
-    data: {
-        main: {
-            temp_min: number;
-            temp_max: number;
-            pressure: number;
-            humidity: number;
-            feels_like: number;
-        };
-        wind: {
-            speed: number;
-        };
-        sys: {
-            sunrise: number;
-            sunset: number;
-        };
-        weather: [{
-            description: string;
-        }];
-        visibility: number;
-    };
+    data: WeatherData;
 }
 
 const formatTime = (timestamp: number): string => {
     const date = new Date(timestamp * 1000);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 };
 
 const WeatherDetails: React.FC<WeatherDetailsProps> = ({ data }) => {
-    // Desestruturando o objeto 'data' para facilitar o uso
-    const {
-        main: { temp_min: minTemp, temp_max: maxTemp, pressure, humidity, feels_like: feelsLike },
-        wind: { speed: windSpeed },
-        sys: { sunrise, sunset },
-        weather,
-        visibility
-    } = data;
-
-    const description = weather[0].description;
-
     return (
-        <div className="weather-details-container">
-            <div className="d-flex flex-column align-items-center mb-4">
-                <h3 className="mb-0">{description}</h3>
-                <p>Sensação: {Math.round(feelsLike)}°C</p>
-            </div>
-            
-            <div className="row g-3">
-                <div className="col-12 col-md-6">
-                    <div className="details-card d-flex align-items-center gap-2">
-                        <i className="bi bi-droplet-half details-card-icon"></i>
-                        <div className="details-card-info">
-                            <h4>Umidade</h4>
-                            <p>{humidity}%</p>
-                        </div>
-                    </div>
+        <div className="weather-details-card">
+            <div className="top-details">
+                <div className="main-description">
+                    <h3 className="text-capitalize">{data.weather[0].description}</h3>
+                    <p className="sensation">Sensação: {Math.round(data.main.feels_like)}°C</p>
                 </div>
-
-                <div className="col-12 col-md-6">
-                    <div className="details-card d-flex align-items-center gap-2">
-                        <i className="bi bi-wind details-card-icon"></i>
-                        <div className="details-card-info">
-                            <h4>Velocidade do Vento</h4>
-                            <p>{(windSpeed * 3.6).toFixed(1)} km/h</p>
-                        </div>
+                <div className="additional-details">
+                    <div className="detail-item">
+                        <i className="bi bi-droplet-half"></i>
+                        <span>{data.main.humidity}%</span>
                     </div>
-                </div>
-
-                <div className="col-12 col-md-6">
-                    <div className="details-card d-flex align-items-center gap-2">
-                        <i className="bi bi-eye-fill details-card-icon"></i>
-                        <div className="details-card-info">
-                            <h4>Visibilidade</h4>
-                            <p>{(visibility / 1000).toFixed(1)} km</p>
-                        </div>
+                    <div className="detail-item">
+                        <i className="bi bi-wind"></i>
+                        <span>{Math.round(data.wind.speed * 3.6)} km/h</span> 
+                    </div>
+                    <div className="detail-item">
+                        <i className="bi bi-eye"></i>
+                        <span>{(data.visibility / 1000).toFixed(1)} km</span>
                     </div>
                 </div>
             </div>
 
-            <div className="col-12">
-                <div className="row g-3">
-                    <div className="col-6 col-sm-6 col-md-3">
-                        <div className="info-card d-flex flex-column align-items-center text-center p-3">
-                            <i className="bi bi-thermometer-half"></i>
-                            <p>{Math.round(minTemp)}° / {Math.round(maxTemp)}°</p>
-                            <span>Min/Máx</span>
-                        </div>
-                    </div>
-                    <div className="col-6 col-sm-6 col-md-3">
-                        <div className="info-card d-flex flex-column align-items-center text-center p-3">
-                            <i className="bi bi-speedometer"></i>
-                            <p>{pressure} hPa</p>
-                            <span>Pressão</span>
-                        </div>
-                    </div>
-                    <div className="col-6 col-sm-6 col-md-3">
-                        <div className="info-card d-flex flex-column align-items-center text-center p-3">
-                            <i className="bi bi-sunrise"></i>
-                            <p>{formatTime(sunrise)}</p>
-                            <span>Nascer do Sol</span>
-                        </div>
-                    </div>
-                    <div className="col-6 col-sm-6 col-md-3">
-                        <div className="info-card d-flex flex-column align-items-center text-center p-3">
-                            <i className="bi bi-sunset"></i>
-                            <p>{formatTime(sunset)}</p>
-                            <span>Pôr do Sol</span>
-                        </div>
-                    </div>
+            <hr className="my-4" style={{ borderColor: 'var(--border-color)' }} />
+
+            <div className="mini-cards-row">
+                <div className="mini-card">
+                    <i className="bi bi-thermometer-half"></i>
+                    <span className="mini-card-label">Min/Máx</span>
+                    <span className="mini-card-value">{Math.round(data.main.temp_min)}° / {Math.round(data.main.temp_max)}°</span>
+                </div>
+                <div className="mini-card">
+                    <i className="bi bi-speedometer"></i>
+                    <span className="mini-card-label">Pressão</span>
+                    <span className="mini-card-value">{data.main.pressure} hPa</span>
+                </div>
+                <div className="mini-card">
+                    <i className="bi bi-brightness-high"></i>
+                    <span className="mini-card-label">Nascer do Sol</span>
+                    <span className="mini-card-value">{formatTime(data.sys.sunrise)}</span>
+                </div>
+                <div className="mini-card">
+                    <i className="bi bi-moon"></i>
+                    <span className="mini-card-label">Pôr do Sol</span>
+                    <span className="mini-card-value">{formatTime(data.sys.sunset)}</span>
                 </div>
             </div>
         </div>

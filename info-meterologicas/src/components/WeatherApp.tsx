@@ -1,17 +1,18 @@
-// src/components/WeatherApp.tsx
-
 import { useState, useEffect, useCallback } from 'react';
 import HistoryModal from './HistoryModal';
 import ConfigModal from './ConfigModal';
-import WeatherDetails from './WeatherDetails';
+import WeatherDetails from './WeatherDetails'; 
 import WeatherForecast from './WeatherForecast';
+import AirQualityAndMap from './AirQualityAndMap';
+import InteractiveMap from './InteractiveMap';
+import ReactCountryFlag from "react-country-flag";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import AirQualityAndMap from './AirQualityAndMap';
-import '../index.css'; // Usando o caminho relativo correto
+import '../index.css';
 
 // Definindo a tipagem para os dados da API do OpenWeatherMap
-interface WeatherData {
+export interface WeatherData {
     name: string;
     sys: {
         country: string;
@@ -42,13 +43,13 @@ interface WeatherData {
 }
 
 // Interfaces para os dados de previsão
-interface HourlyForecastData {
+export interface HourlyForecastData {
     time: string;
     temp: number;
     icon: string;
 }
 
-interface DailyForecastData {
+export interface DailyForecastData {
     day: string;
     temp: number;
     icon: string;
@@ -73,15 +74,26 @@ interface AirQualityAPIResponse {
     }];
 }
 
+// Interface que define o formato de dados que o componente AirQualityAndMap espera
+export interface AirQualityData {
+    aqi: number;
+    components: {
+        co: number;
+        o3: number;
+        pm2_5: number;
+        pm10: number;
+    };
+}
+
 // Interface para o objeto de previsão retornado pela API
 interface ForecastItem {
-  dt: number;
-  main: {
-    temp: number;
-  };
-  weather: [{
-    icon: string;
-  }];
+    dt: number;
+    main: {
+        temp: number;
+    };
+    weather: [{
+        icon: string;
+    }];
 }
 
 const brazilianCapitals = [
@@ -91,6 +103,7 @@ const brazilianCapitals = [
     'São Paulo', 'Aracaju', 'Palmas'
 ];
 
+
 const WeatherApp: React.FC = () => {
     const [showHistory, setShowHistory] = useState<boolean>(false);
     const [showConfig, setShowConfig] = useState<boolean>(false);
@@ -99,15 +112,18 @@ const WeatherApp: React.FC = () => {
     const [searchHistory, setSearchHistory] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [currentTime, setCurrentTime] = useState<string>('');
+    const [hours, setHours] = useState<string>('00');
+    const [minutes, setMinutes] = useState<string>('00');
+    const [seconds, setSeconds] = useState<string>('00');
     const [theme, setTheme] = useState<string>('');
+    const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
 
     const [hourlyForecast, setHourlyForecast] = useState<HourlyForecastData[]>([]);
     const [dailyForecast, setDailyForecast] = useState<DailyForecastData[]>([]);
-    // Usando a tipagem correta para o estado
-    const [airQualityData, setAirQualityData] = useState<AirQualityAPIResponse['list'][0] | null>(null);
+    const [airQualityData, setAirQualityData] = useState<AirQualityData | null>(null);
 
     const apiKey = import.meta.env.VITE_OPENWEATHERMAP_API_KEY;
+    const unsplashApiKey = import.meta.env.VITE_UNSPLASH_API_KEY;
 
     const handleShowHistory = () => setShowHistory(true);
     const handleCloseHistory = () => setShowHistory(false);
@@ -128,11 +144,33 @@ const WeatherApp: React.FC = () => {
         return 'noite';
     };
 
+    const fetchUnsplashImage = useCallback(async (query: string) => {
+        if (!unsplashApiKey) {
+            console.error('Chave de API do Unsplash não encontrada.');
+            return;
+        }
+        const url = `https://api.unsplash.com/search/photos?query=${query}&client_id=${unsplashApiKey}&orientation=landscape&per_page=1`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (response.ok && data.results.length > 0) {
+                setBackgroundImageUrl(data.results[0].urls.regular);
+            } else {
+                setBackgroundImageUrl(null);
+                console.error('Nenhuma imagem encontrada para a cidade.');
+            }
+        } catch (err) {
+            console.error('Erro ao buscar imagem no Unsplash:', err);
+            setBackgroundImageUrl(null);
+        }
+    }, [unsplashApiKey]);
+
     const fetchWeatherData = useCallback(async (location: { city: string } | { lat: number; lon: number }) => {
         setLoading(true);
         setError(null);
 
         let url = '';
+
         if ('city' in location) {
             url = `https://api.openweathermap.org/data/2.5/weather?q=${location.city}&appid=${apiKey}&units=metric&lang=pt_br`;
         } else {
@@ -152,15 +190,15 @@ const WeatherApp: React.FC = () => {
                 if (!prevHistory.includes(data.name)) return [...prevHistory, data.name];
                 return prevHistory;
             });
+            fetchUnsplashImage(data.name);
         } catch (err: unknown) {
             if (err instanceof Error) setError(err.message);
             else setError('Ocorreu um erro desconhecido.');
         } finally {
             setLoading(false);
         }
-    }, [apiKey]);
+    }, [apiKey, fetchUnsplashImage]);
 
-    // Efeito 1: Busca a localização inicial do usuário ou uma cidade aleatória
     useEffect(() => {
         const savedHistory = localStorage.getItem('weatherSearchHistory');
         if (savedHistory) setSearchHistory(JSON.parse(savedHistory));
@@ -183,22 +221,26 @@ const WeatherApp: React.FC = () => {
         }
     }, [fetchWeatherData]);
 
-    // Efeito 2: Salva o histórico no localStorage
     useEffect(() => {
         localStorage.setItem('weatherSearchHistory', JSON.stringify(searchHistory));
     }, [searchHistory]);
 
-    // Efeito 3: Atualiza a hora e o tema a cada segundo
     useEffect(() => {
         const updateTime = () => {
-            setCurrentTime(new Date().toLocaleTimeString('pt-BR'));
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            
+            setHours(h);
+            setMinutes(m);
+            setSeconds(s);
             setTheme(getThemeByTime());
         };
         const timer = setInterval(updateTime, 1000);
         return () => clearInterval(timer);
     }, []);
 
-    // Efeito 4: Busca a previsão horária e diária
     useEffect(() => {
         const fetchForecastData = async () => {
             try {
@@ -206,7 +248,6 @@ const WeatherApp: React.FC = () => {
                 if (!response.ok) throw new Error('Previsão não encontrada.');
                 const data = await response.json();
                 
-                // Correção: Tipando o item corretamente
                 const newHourlyData = data.list.slice(0, 5).map((item: ForecastItem) => ({
                     time: new Date(item.dt * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
                     temp: item.main.temp,
@@ -229,14 +270,19 @@ const WeatherApp: React.FC = () => {
         if (cityName) fetchForecastData();
     }, [cityName, apiKey]);
 
-    // Efeito 5: Busca a qualidade do ar
     useEffect(() => {
         const fetchAirQualityData = async (lat: number, lon: number) => {
             try {
                 const response = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`);
                 if (!response.ok) throw new Error('Dados de qualidade do ar não encontrados.');
                 const data: AirQualityAPIResponse = await response.json();
-                setAirQualityData(data.list[0]);
+                
+                if (data.list.length > 0) {
+                    setAirQualityData({
+                        aqi: data.list[0].main.aqi,
+                        components: data.list[0].components,
+                    });
+                }
             } catch (err: unknown) {
                 console.error('Erro ao buscar a qualidade do ar:', err);
                 setAirQualityData(null);
@@ -244,7 +290,7 @@ const WeatherApp: React.FC = () => {
         };
 
         if (weatherData && weatherData.coord) {
-             fetchAirQualityData(weatherData.coord.lat, weatherData.coord.lon);
+            fetchAirQualityData(weatherData.coord.lat, weatherData.coord.lon);
         }
     }, [weatherData, apiKey]);
 
@@ -254,26 +300,77 @@ const WeatherApp: React.FC = () => {
     };
 
     return (
-        <div className={`weather-container ${theme}`}>
+        <div
+            className={`weather-container ${theme}`}
+            style={{
+                backgroundImage: backgroundImageUrl ? `url(${backgroundImageUrl})` : 'linear-gradient(to top, #6a85b6 0%, #bac8e0 100%)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed',
+                transition: 'background-image 0.5s ease-in-out',
+            }}
+        >
             <i className="bi bi-gear-fill gear-icon" onClick={handleShowConfig}></i>
             <div className="glass-container">
                 {loading && <p>Carregando...</p>}
                 {error && <p className="text-danger">{error}</p>}
+                
                 {weatherData && (
                     <>
-                        <h1>{weatherData.name}, {weatherData.sys.country}</h1>
-                        <p>{formatarData(weatherData.dt)}</p>
-                        <p>Relógio: {currentTime}</p>
-                        <div className="glass-temperature">
-                            {Math.round(weatherData.main.temp)}<span className="glass-temperature-small">°C</span>
-                            <img src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`} alt="Clima" style={{ width: '80px', height: '80px', marginLeft: '20px' }} />
+                        <div className="glass-card main-weather-card">
+                            <div className="main-info">
+                                <h1>
+                                    {weatherData.name}, {weatherData.sys.country}
+                                    <ReactCountryFlag
+                                        countryCode={weatherData.sys.country}
+                                        svg
+                                        style={{ width: '2em', height: '1.5em', marginLeft: '10px' }}
+                                        title={weatherData.sys.country}
+                                    />
+                                </h1>
+                                <p>{formatarData(weatherData.dt)}</p>
+                                <div className="clock-display">
+                                    <div className="clock-segment">{hours}</div>
+                                    <div className="clock-segment">{minutes}</div>
+                                    <div className="clock-segment">{seconds}</div>
+                                </div>
+                                <div className="glass-temperature">
+                                    {Math.round(weatherData.main.temp)}<span className="glass-temperature-small">°C</span>
+                                    <img src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`} alt="Clima" style={{ width: '80px', height: '80px', marginLeft: '20px' }} />
+                                </div>
+                            </div>
                         </div>
-                        <hr className="my-4" style={{ borderColor: 'var(--border-color)' }} />
-                        <WeatherDetails data={weatherData} />
+
+                        <div className="content-grid-wrapper">
+                            <div className="glass-card details-card">
+                                <h2>Detalhes do Clima</h2>
+                                <WeatherDetails data={weatherData} />
+                            </div>
+
+                            <div className="glass-card forecast-card">
+                                <WeatherForecast hourlyData={hourlyForecast} dailyData={dailyForecast} />
+                            </div>
+
+                            <div className="glass-card map-card-full">
+                                <h2>Mapa Interativo</h2>
+                                <div className="map-container">
+                                    <InteractiveMap lat={weatherData.coord.lat} lon={weatherData.coord.lon} />
+                                </div>
+                            </div>
+
+                            <div className="glass-card air-quality-card-full">
+                                <h2>Qualidade do Ar</h2>
+                                {airQualityData && (
+                                    <div className="air-quality-container">
+                                        <AirQualityAndMap airQualityData={airQualityData} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </>
                 )}
 
-                <form onSubmit={handleSearch} className="glass-search-bar">
+                <form onSubmit={handleSearch} className="glass-search-bar mt-4">
                     <input
                         type="text"
                         placeholder="Digite outra cidade..."
@@ -286,9 +383,6 @@ const WeatherApp: React.FC = () => {
                     </button>
                 </form>
 
-                {weatherData && <WeatherForecast hourlyData={hourlyForecast} dailyData={dailyForecast} />}
-                {airQualityData && <AirQualityAndMap airQualityData={{ aqi: airQualityData.main.aqi, components: airQualityData.components }} />}
-
                 <div className="d-flex justify-content-center gap-2 mt-3">
                     <button className="btn btn-secondary glass-btn" onClick={handleShowHistory}>
                         <i className="bi bi-clock-history"></i> Histórico
@@ -299,12 +393,7 @@ const WeatherApp: React.FC = () => {
                 </div>
             </div>
 
-            <HistoryModal
-                show={showHistory}
-                handleClose={handleCloseHistory}
-                history={searchHistory}
-                onClearHistory={handleClearHistory}
-            />
+            <HistoryModal show={showHistory} handleClose={handleCloseHistory} history={searchHistory} onClearHistory={handleClearHistory} />
             <ConfigModal show={showConfig} handleClose={handleCloseConfig} />
         </div>
     );
