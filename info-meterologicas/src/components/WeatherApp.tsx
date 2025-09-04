@@ -3,7 +3,6 @@ import HistoryModal from './HistoryModal';
 import ConfigModal from './ConfigModal';
 import WeatherDetails from './WeatherDetails'; 
 import WeatherForecast from './WeatherForecast';
-import AirQualityAndMap from './AirQualityAndMap';
 import InteractiveMap from './InteractiveMap';
 import ReactCountryFlag from "react-country-flag";
 
@@ -103,6 +102,11 @@ const brazilianCapitals = [
     'São Paulo', 'Aracaju', 'Palmas'
 ];
 
+// Definindo coordenadas padrão para renderização inicial
+const defaultCoords = {
+    lat: -23.5505, // Coordenadas de São Paulo
+    lon: -46.6333,
+};
 
 const WeatherApp: React.FC = () => {
     const [showHistory, setShowHistory] = useState<boolean>(false);
@@ -115,12 +119,12 @@ const WeatherApp: React.FC = () => {
     const [hours, setHours] = useState<string>('00');
     const [minutes, setMinutes] = useState<string>('00');
     const [seconds, setSeconds] = useState<string>('00');
-    const [theme, setTheme] = useState<string>('');
+    const [theme, setTheme] = useState<string>('automatico');
     const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
-
     const [hourlyForecast, setHourlyForecast] = useState<HourlyForecastData[]>([]);
     const [dailyForecast, setDailyForecast] = useState<DailyForecastData[]>([]);
     const [airQualityData, setAirQualityData] = useState<AirQualityData | null>(null);
+    const [mapCoords, setMapCoords] = useState<{ lat: number; lon: number }>(defaultCoords);
 
     const apiKey = import.meta.env.VITE_OPENWEATHERMAP_API_KEY;
     const unsplashApiKey = import.meta.env.VITE_UNSPLASH_API_KEY;
@@ -129,7 +133,16 @@ const WeatherApp: React.FC = () => {
     const handleCloseHistory = () => setShowHistory(false);
     const handleShowConfig = () => setShowConfig(true);
     const handleCloseConfig = () => setShowConfig(false);
+    
+    // Funções para lidar com o histórico
     const handleClearHistory = () => setSearchHistory([]);
+    const handleRemoveSelected = (cityToRemove: string) => {
+        setSearchHistory(prevHistory => prevHistory.filter(city => city !== cityToRemove));
+    };
+    const handleSelectCity = (city: string) => {
+        handleCloseHistory();
+        fetchWeatherData({ city: city });
+    };
 
     const formatarData = (timestamp: number): string => {
         const data = new Date(timestamp * 1000);
@@ -143,6 +156,14 @@ const WeatherApp: React.FC = () => {
         if (hour >= 12 && hour < 18) return 'tarde';
         return 'noite';
     };
+    
+    const setAppTheme = useCallback((newTheme: string) => {
+        if (newTheme === 'automatico') {
+            setTheme(getThemeByTime());
+        } else {
+            setTheme(newTheme);
+        }
+    }, []);
 
     const fetchUnsplashImage = useCallback(async (query: string) => {
         if (!unsplashApiKey) {
@@ -186,6 +207,7 @@ const WeatherApp: React.FC = () => {
             const data: WeatherData = await response.json();
             setWeatherData(data);
             setCityName(data.name);
+            setMapCoords({ lat: data.coord.lat, lon: data.coord.lon }); // Atualiza as coordenadas do mapa
             setSearchHistory(prevHistory => {
                 if (!prevHistory.includes(data.name)) return [...prevHistory, data.name];
                 return prevHistory;
@@ -235,11 +257,32 @@ const WeatherApp: React.FC = () => {
             setHours(h);
             setMinutes(m);
             setSeconds(s);
-            setTheme(getThemeByTime());
         };
         const timer = setInterval(updateTime, 1000);
         return () => clearInterval(timer);
     }, []);
+    
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('appTheme');
+        if (savedTheme) {
+            setAppTheme(savedTheme);
+        } else {
+            setAppTheme('automatico');
+        }
+        
+        const timer = setInterval(() => {
+            const currentSavedTheme = localStorage.getItem('appTheme');
+            if (currentSavedTheme === 'automatico') {
+                setTheme(getThemeByTime());
+            }
+        }, 1000);
+        
+        return () => clearInterval(timer);
+    }, [setAppTheme]);
+    
+    useEffect(() => {
+        localStorage.setItem('appTheme', theme);
+    }, [theme]);
 
     useEffect(() => {
         const fetchForecastData = async () => {
@@ -298,6 +341,25 @@ const WeatherApp: React.FC = () => {
         e.preventDefault();
         if (cityName) fetchWeatherData({ city: cityName });
     };
+    
+    // Funções de qualidade do ar
+    const aqiDescription = (aqi: number): string => {
+        if (aqi === 1) return 'Boa';
+        if (aqi === 2) return 'Razoável';
+        if (aqi === 3) return 'Moderada';
+        if (aqi === 4) return 'Pobre';
+        if (aqi === 5) return 'Muito Pobre';
+        return 'N/A';
+    };
+
+    const getAqiColor = (aqi: number): string => {
+        if (aqi === 1) return 'green';
+        if (aqi === 2) return 'yellow';
+        if (aqi === 3) return 'orange';
+        if (aqi === 4) return 'red';
+        if (aqi === 5) return 'purple';
+        return 'gray';
+    };
 
     return (
         <div
@@ -350,25 +412,45 @@ const WeatherApp: React.FC = () => {
                             <div className="glass-card forecast-card">
                                 <WeatherForecast hourlyData={hourlyForecast} dailyData={dailyForecast} />
                             </div>
-
-                            <div className="glass-card map-card-full">
-                                <h2>Mapa Interativo</h2>
-                                <div className="map-container">
-                                    <InteractiveMap lat={weatherData.coord.lat} lon={weatherData.coord.lon} />
-                                </div>
-                            </div>
-
-                            <div className="glass-card air-quality-card-full">
-                                <h2>Qualidade do Ar</h2>
-                                {airQualityData && (
-                                    <div className="air-quality-container">
-                                        <AirQualityAndMap airQualityData={airQualityData} />
-                                    </div>
-                                )}
-                            </div>
                         </div>
                     </>
                 )}
+
+                <div className="content-grid-wrapper">
+                    <div className="glass-card map-card-full">
+                        <h2>Mapa Interativo</h2>
+                        <div className="map-container">
+                            <InteractiveMap lat={mapCoords.lat} lon={mapCoords.lon} />
+                        </div>
+                    </div>
+
+                    <div className="glass-card air-quality-card-full">
+                        <h2>Qualidade do Ar</h2>
+                        {airQualityData && (
+                            <div className="air-quality-content-wrapper">
+                                <div className="air-quality-left">
+                                    <div className="aqi-circle" style={{ backgroundColor: getAqiColor(airQualityData.aqi) }}>
+                                        <span>{airQualityData.aqi}</span>
+                                    </div>
+                                    <p>{aqiDescription(airQualityData.aqi)}</p>
+                                </div>
+                                <div className="air-quality-right">
+                                    {airQualityData.components && [
+                                        { name: 'PM2.5', value: airQualityData.components.pm2_5.toFixed(2) },
+                                        { name: 'PM10', value: airQualityData.components.pm10.toFixed(2) },
+                                        { name: 'O₃', value: airQualityData.components.o3.toFixed(2) },
+                                        { name: 'CO', value: airQualityData.components.co.toFixed(2) },
+                                    ].map((component, index) => (
+                                        <div key={index} className="air-quality-item">
+                                            <span className="component-name">{component.name}</span>
+                                            <span className="component-value">{component.value} µg/m³</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
 
                 <form onSubmit={handleSearch} className="glass-search-bar mt-4">
                     <input
@@ -379,7 +461,7 @@ const WeatherApp: React.FC = () => {
                         onChange={(e) => setCityName(e.target.value)}
                     />
                     <button type="submit" className="glass-button">
-                        <i className="bi bi-search"></i>
+                        <i className="bi bi-search" style={{color:"var(--letter-color)"}}></i>
                     </button>
                 </form>
 
@@ -393,8 +475,15 @@ const WeatherApp: React.FC = () => {
                 </div>
             </div>
 
-            <HistoryModal show={showHistory} handleClose={handleCloseHistory} history={searchHistory} onClearHistory={handleClearHistory} />
-            <ConfigModal show={showConfig} handleClose={handleCloseConfig} />
+            <HistoryModal
+                show={showHistory}
+                handleClose={handleCloseHistory}
+                history={searchHistory}
+                onClearHistory={handleClearHistory}
+                onSelectCity={handleSelectCity}
+                onRemoveSelected={handleRemoveSelected}
+            />
+            <ConfigModal show={showConfig} handleClose={handleCloseConfig} currentTheme={theme} setAppTheme={setAppTheme} />
         </div>
     );
 };

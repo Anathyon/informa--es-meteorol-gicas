@@ -25,7 +25,7 @@
     --letter-color: #ffffff;
     --main-color: linear-gradient(120deg, #412410a2, #f74e009a);
     --bg-destaque: #ffffff7c;
-    --border-color: #000;
+    --border-color: #fff;
 }
 
 .noite {
@@ -46,21 +46,21 @@
     color: var(--letter-color);
     text-align: center;
     position: relative;
-    padding: 20px;
+    padding: 2rem;
     transition: background 0.5s ease-in-out;
 }
 
 /* Ícone de engrenagem */
 .gear-icon {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 2rem;
+    right: 2rem;
     font-size: 2rem;
     cursor: pointer;
     color: var(--letter-color);
     background: var(--bg-destaque);
     border-radius: 50%;
-    padding: 10px;
+    padding: 0.5rem;
     transition: transform 0.3s ease;
     z-index: 10;
 }
@@ -72,28 +72,28 @@
 /* Container de vidro (layout principal) */
 .glass-container {
     background: var(--main-color);
-    padding: 30px 50px;
-    border-radius: 25px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    padding: 2rem 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 0.5rem 2rem 0 rgba(0, 0, 0, 0.37);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
-    width: 100%;
-    max-width: 1200px; /* Alterado para ocupar a largura da imagem de referência */
+    width: 90%;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centraliza todo o conteúdo horizontalmente */
+    align-items: center;
     text-align: center;
-    margin: 40px auto;
+    margin: 2.5rem auto;
 }
 
 .glass-container h1 {
-    font-size: 3rem;
+    font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: bold;
 }
 
 .glass-temperature {
-    font-size: 6rem;
+    font-size: clamp(4rem, 10vw, 8rem);
     font-weight: bold;
     display: flex;
     justify-content: center;
@@ -101,7 +101,7 @@
 }
 
 .glass-temperature-small {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
     vertical-align: super;
 }
 
@@ -109,17 +109,17 @@
 .content-grid-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.5rem;
     width: 100%;
 }
 
 .glass-card {
     background: rgba(var(--glass-rgb), 0.2);
-    border-radius: 15px;
+    border-radius: 1rem;
     border: 1px solid rgba(var(--border-rgb), 0.3);
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    padding: 20px;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1), 0 0.0625rem 0.2rem rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -129,7 +129,7 @@
 
 /* CARDS DE PREVISÃO E DETALHES */
 .forecast-card, .details-card, .map-card-full, .air-quality-card-full {
-    margin-top: 20px;
+    margin-top: 1rem;
 }
 
 /* LAYOUT DENTRO DO WEATHERDETAILS.TSX */
@@ -143,17 +143,17 @@
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 1.25rem;
 }
 .additional-details {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.625rem;
 }
 .detail-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 0.625rem;
     font-size: 1.1em;
 }
 
@@ -161,20 +161,20 @@
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 1rem;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 1.25rem;
 }
 
 .mini-card {
     background: rgba(var(--card-bg-rgb), 0.3);
-    border-radius: 10px;
-    padding: 15px;
+    border-radius: 0.625rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    flex: 1 1 200px;
+    flex: 1 1 10rem;
     border: 1px solid rgba(var(--border-rgb), 0.3);
 }
 
@@ -192,51 +192,51 @@
 .hourly-forecast-row {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 1rem;
     width: 100%;
     flex-wrap: wrap;
 }
 
 .forecast-item {
     background: rgba(var(--card-bg-rgb), 0.3);
-    border-radius: 10px;
-    padding: 15px;
+    border-radius: 0.625rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    flex: 1 1 120px;
+    flex: 1 1 7.5rem;
     border: 1px solid rgba(var(--border-rgb), 0.3);
 }
 
 .daily-forecast-card {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 1.25rem;
     text-align: center;
 }
 .daily-forecast-row {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 0.625rem;
     width: 100%;
 }
 .daily-forecast-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 0.625rem;
+    border-radius: 0.5rem;
     flex: 1 1 auto;
 }
 
 /* Barra de busca */
 .glass-search-bar {
     display: flex;
-    margin-top: 20px;
+    margin-top: 1.25rem;
     background: var(--bg-destaque);
-    border-radius: 50px;
-    padding: 5px;
+    border-radius: 50rem;
+    padding: 0.3125rem;
 }
 
 .glass-input {
@@ -244,7 +244,7 @@
     background: transparent;
     border: none;
     outline: none;
-    padding: 10px 20px;
+    padding: 0.625rem 1.25rem;
     color: var(--letter-color);
     font-size: 1rem;
 }
@@ -259,8 +259,8 @@
     color: var(--background);
     border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -272,7 +272,7 @@
     background: var(--bg-destaque);
     color: var(--letter-color);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border-radius: 1.25rem;
 }
 
 /* Estilos para os Modais */
@@ -286,7 +286,7 @@
     -webkit-backdrop-filter: blur(10px);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
+    border-radius: 0.9375rem;
 }
 
 .modal-header {
@@ -299,9 +299,9 @@
 
 .forecast-container {
     width: 100%;
-    margin-top: 40px;
-    padding: 20px;
-    border-radius: 20px;
+    margin-top: 2.5rem;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
@@ -311,7 +311,7 @@
 .forecast-title {
     font-size: 1.25rem;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     text-align: center;
 }
 
@@ -320,9 +320,9 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 15px 10px;
+    padding: 0.9375rem 0.625rem;
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
+    border-radius: 0.9375rem;
     border: 1px solid var(--border-color);
 }
 
@@ -330,12 +330,12 @@
 .forecast-card .forecast-day {
     font-size: 0.9rem;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
 }
 
 .forecast-card .forecast-icon {
     font-size: 2.5rem;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
 }
 
 .forecast-card .forecast-temp {
@@ -360,9 +360,9 @@
 
 .air-quality-container {
     width: 100%;
-    margin-top: 40px;
-    padding: 20px;
-    border-radius: 20px;
+    margin-top: 2.5rem;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
@@ -372,16 +372,29 @@
 .air-quality-title {
     font-size: 1.25rem;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     text-align: center;
 }
 
+/* CONTAINER DO MAPA E QUALIDADE DO AR */
+.map-card-full, .air-quality-card-full {
+    margin-top: 1.25rem;
+}
+
 .map-card {
-    min-height: 200px;
+    min-height: 40vh; /* Altura relativa para o mapa */
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
+    border-radius: 1rem;
     border: 1px solid var(--border-color);
-    padding: 20px;
+    padding: 1.25rem;
+}
+
+/* O contêiner interno do mapa precisa de uma altura de 100% para ocupar o espaço do pai */
+.map-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    overflow: hidden;
 }
 
 .map-icon {
@@ -393,12 +406,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
+    width: clamp(3rem, 8vw, 4rem); /* Tamanho responsivo */
+    height: clamp(3rem, 8vw, 4rem);
     border-radius: 50%;
     font-size: 1.5rem;
     font-weight: bold;
-    color: white;
+    color: var(--letter-color);
     border: 3px solid white;
 }
 
@@ -406,10 +419,10 @@
     background: rgba(var(--glass-rgb), 0.2); 
     border: 1px solid rgba(var(--border-rgb), 0.3);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: 0.9375rem;
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1), 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.08);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -429,38 +442,38 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
 }
 
 .aqi-circle {
-    width: 80px;
-    height: 80px;
+    width: clamp(5rem, 15vw, 6rem);
+    height: clamp(5rem, 15vw, 6rem);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 2em;
+    font-size: clamp(1.5em, 5vw, 2em);
     font-weight: bold;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-    margin-bottom: 10px;
+    box-shadow: inset 0 0 0.3125rem rgba(0, 0, 0, 0.2);
+    margin-bottom: 0.625rem;
 }
 
 .air-quality-right {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.625rem;
     width: 60%;
-    min-width: 250px;
+    min-width: 15.625rem;
 }
 
 .air-quality-item {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 0.625rem;
     background: rgba(var(--glass-rgb), 0.1);
-    border-radius: 8px;
-    color: #fff;
+    border-radius: 0.5rem;
+    color: var(--letter-color);
 }
 
 .component-name, .component-value {
@@ -469,26 +482,26 @@
 
 .clock-display {
     display: flex;
-    gap: 10px;
+    gap: 0.625rem;
     justify-content: center;
     align-items: center;
-    margin: 15px 0;
+    margin: 0.9375rem 0;
 }
 
 .clock-segment {
     background: rgba(var(--glass-rgb), 0.2);
     border: 1px solid rgba(var(--border-rgb), 0.3);
     backdrop-filter: blur(10px);
-    border-radius: 8px;
-    padding: 10px 15px;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.9375rem;
     font-family: 'Montserrat', sans-serif;
-    font-size: 2.2em;
+    font-size: clamp(1.5em, 5vw, 2.2em);
     font-weight: 700;
     color: #fff;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    min-width: 70px;
+    min-width: 4.375rem;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1), 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.08);
 }
 
 /* Media Queries para responsividade */
@@ -496,10 +509,151 @@
     .content-grid-wrapper {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
+        gap: 1.25rem;
     }
 
     .map-card-full, .air-quality-card-full {
         grid-column: span 2;
     }
+}
+
+/* --- Novos Estilos para os Modais e Botões --- */
+
+/* Estilos para o modal de histórico e configuração */
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 1.5rem 2rem 0.5rem;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-body {
+    background: none;
+    border-top: none;
+    border-bottom: none;
+    padding: 0.5rem 2rem;
+}
+
+.modal-footer {
+    border-top: none;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 1rem 2rem 1.5rem;
+}
+
+/* Estilo para os itens da lista do histórico */
+.list-group-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.list-group-item:hover,
+.list-group-item.active {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Ajustes nos botões de ação do modal */
+.modal-footer .btn {
+    font-weight: bold;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.modal-footer .btn-danger {
+    background-color: rgba(220, 53, 69, 0.7);
+}
+
+.modal-footer .btn-danger:hover {
+    background-color: rgba(220, 53, 69, 0.9);
+}
+
+.modal-footer .btn-secondary {
+    background-color: rgba(108, 117, 125, 0.7);
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: rgba(108, 117, 125, 0.9);
+}
+
+.modal-footer .btn-primary {
+    background-color: rgba(25, 135, 84, 0.7);
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: rgba(25, 135, 84, 0.9);
+}
+
+.modal-footer .btn:disabled {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Estilos para o ConfigModal */
+.config-label {
+    color: #fff;
+    font-weight: 500;
+}
+
+.config-select {
+    width: 150px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+.config-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.config-select option {
+    background-color: #333;
+    color: #fff;
+}
+
+.form-switch .form-check-input {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: rgba(30, 144, 255, 0.7);
+    border-color: rgba(30, 144, 255, 1);
+}
+
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(30, 144, 255, 0.25);
 }
