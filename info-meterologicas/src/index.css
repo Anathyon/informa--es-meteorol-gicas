@@ -255,8 +255,8 @@
 }
 
 .glass-button {
-    background: var(--letter-color);
-    color: var(--background);
+    background: var(--background);
+    color: var(--letter-color);
     border: none;
     border-radius: 50%;
     width: 2.5rem;
