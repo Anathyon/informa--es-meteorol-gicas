@@ -377,8 +377,12 @@
 }
 
 /* CONTAINER DO MAPA E QUALIDADE DO AR */
-.map-card-full, .air-quality-card-full {
-    margin-top: 1.25rem;
+.map-card-full {
+    margin-top: 2rem;
+}
+
+.air-quality-card-full {
+    margin-top: 2rem;
 }
 
 .map-card {

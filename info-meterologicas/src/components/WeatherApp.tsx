@@ -1,16 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import HistoryModal from './HistoryModal';
 import ConfigModal from './ConfigModal';
-import WeatherDetails from './WeatherDetails'; 
+import WeatherDetails from './WeatherDetails';
 import WeatherForecast from './WeatherForecast';
 import InteractiveMap from './InteractiveMap';
 import ReactCountryFlag from "react-country-flag";
+import { Button } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../index.css';
 
-// Definindo a tipagem para os dados da API do OpenWeatherMap
+// Interfaces... (mantêm-se as mesmas)
 export interface WeatherData {
     name: string;
     sys: {
@@ -41,7 +42,6 @@ export interface WeatherData {
     };
 }
 
-// Interfaces para os dados de previsão
 export interface HourlyForecastData {
     time: string;
     temp: number;
@@ -54,7 +54,6 @@ export interface DailyForecastData {
     icon: string;
 }
 
-// Interface para a resposta completa da API de Qualidade do Ar
 interface AirQualityAPIResponse {
     coord: {
         lon: number;
@@ -73,7 +72,6 @@ interface AirQualityAPIResponse {
     }];
 }
 
-// Interface que define o formato de dados que o componente AirQualityAndMap espera
 export interface AirQualityData {
     aqi: number;
     components: {
@@ -84,7 +82,6 @@ export interface AirQualityData {
     };
 }
 
-// Interface para o objeto de previsão retornado pela API
 interface ForecastItem {
     dt: number;
     main: {
@@ -102,9 +99,8 @@ const brazilianCapitals = [
     'São Paulo', 'Aracaju', 'Palmas'
 ];
 
-// Definindo coordenadas padrão para renderização inicial
 const defaultCoords = {
-    lat: -23.5505, // Coordenadas de São Paulo
+    lat: -23.5505,
     lon: -46.6333,
 };
 
@@ -134,7 +130,6 @@ const WeatherApp: React.FC = () => {
     const handleShowConfig = () => setShowConfig(true);
     const handleCloseConfig = () => setShowConfig(false);
     
-    // Funções para lidar com o histórico
     const handleClearHistory = () => setSearchHistory([]);
     const handleRemoveSelected = (cityToRemove: string) => {
         setSearchHistory(prevHistory => prevHistory.filter(city => city !== cityToRemove));
@@ -207,7 +202,7 @@ const WeatherApp: React.FC = () => {
             const data: WeatherData = await response.json();
             setWeatherData(data);
             setCityName(data.name);
-            setMapCoords({ lat: data.coord.lat, lon: data.coord.lon }); // Atualiza as coordenadas do mapa
+            setMapCoords({ lat: data.coord.lat, lon: data.coord.lon });
             setSearchHistory(prevHistory => {
                 if (!prevHistory.includes(data.name)) return [...prevHistory, data.name];
                 return prevHistory;
@@ -342,7 +337,6 @@ const WeatherApp: React.FC = () => {
         if (cityName) fetchWeatherData({ city: cityName });
     };
     
-    // Funções de qualidade do ar
     const aqiDescription = (aqi: number): string => {
         if (aqi === 1) return 'Boa';
         if (aqi === 2) return 'Razoável';
@@ -359,6 +353,13 @@ const WeatherApp: React.FC = () => {
         if (aqi === 4) return 'red';
         if (aqi === 5) return 'purple';
         return 'gray';
+    };
+
+    const getTextColorByAqi = (aqi: number): string => {
+        if (aqi <= 2) {
+            return 'black';
+        }
+        return 'white';
     };
 
     return (
@@ -417,19 +418,23 @@ const WeatherApp: React.FC = () => {
                 )}
 
                 <div className="content-grid-wrapper">
-                    <div className="glass-card map-card-full">
-                        <h2>Mapa Interativo</h2>
-                        <div className="map-container">
+                    {weatherData && (
+                        <div className="glass-card map-card-full">
                             <InteractiveMap lat={mapCoords.lat} lon={mapCoords.lon} />
                         </div>
-                    </div>
-
+                    )}
+                    
                     <div className="glass-card air-quality-card-full">
                         <h2>Qualidade do Ar</h2>
                         {airQualityData && (
                             <div className="air-quality-content-wrapper">
                                 <div className="air-quality-left">
-                                    <div className="aqi-circle" style={{ backgroundColor: getAqiColor(airQualityData.aqi) }}>
+                                    <div className="aqi-circle" 
+                                        style={{ 
+                                            backgroundColor: getAqiColor(airQualityData.aqi),
+                                            color: getTextColorByAqi(airQualityData.aqi)
+                                        }}
+                                    >
                                         <span>{airQualityData.aqi}</span>
                                     </div>
                                     <p>{aqiDescription(airQualityData.aqi)}</p>
@@ -461,17 +466,17 @@ const WeatherApp: React.FC = () => {
                         onChange={(e) => setCityName(e.target.value)}
                     />
                     <button type="submit" className="glass-button">
-                        <i className="bi bi-search" style={{color:"var(--letter-color)"}}></i>
+                        <i className="bi bi-search" style={{color:"#000"}}></i>
                     </button>
                 </form>
 
                 <div className="d-flex justify-content-center gap-2 mt-3">
-                    <button className="btn btn-secondary glass-btn" onClick={handleShowHistory}>
+                    <Button className="btn btn-secondary glass-btn" onClick={handleShowHistory}>
                         <i className="bi bi-clock-history"></i> Histórico
-                    </button>
-                    <button className="btn btn-secondary glass-btn" onClick={handleShowConfig}>
+                    </Button>
+                    <Button className="btn btn-secondary glass-btn" onClick={handleShowConfig}>
                         <i className="bi bi-gear-fill"></i> Config
-                    </button>
+                    </Button>
                 </div>
             </div>
 
