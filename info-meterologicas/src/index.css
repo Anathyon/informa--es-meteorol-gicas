@@ -58,15 +58,12 @@
     font-size: 2rem;
     cursor: pointer;
     color: var(--letter-color);
-    background: var(--bg-destaque);
-    border-radius: 50%;
-    padding: 0.5rem;
     transition: transform 0.3s ease;
     z-index: 10;
 }
 
 .gear-icon:hover {
-    transform: rotate(90deg);
+    transform: rotate(40deg);
 }
 
 /* Container de vidro (layout principal) */
