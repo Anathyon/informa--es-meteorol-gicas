@@ -658,3 +658,13 @@
 .form-switch .form-check-input:focus {
     box-shadow: 0 0 0 0.25rem rgba(30, 144, 255, 0.25);
 }
+
+.chart-card-full {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 350px; /* Altura do card, ajuste se necessário */
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+}
