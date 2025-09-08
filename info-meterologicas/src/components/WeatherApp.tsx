@@ -10,30 +10,30 @@ import { Button } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import '../index.css';
+import '../styles/index.css';
 
 // Interfaces... (mantêm-se as mesmas)
 export interface WeatherData {
 name: string;
 sys: {
-    country: string;
-    sunrise: number;
-    sunset: number;
+    country: string;
+    sunrise: number;
+    sunset: number;
 };
 main: {
-    temp: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    pressure: number;
-    humidity: number;
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
 };
 weather: [{
-    description: string;
-    icon: string;
+    description: string;
+    icon: string;
 }];
 wind: {
-    speed: number;
+    speed: number;
 };
 visibility: number;
 dt: number;
@@ -57,18 +57,18 @@ export interface DailyForecastData {
 
 interface AirQualityAPIResponse {
 coord: {
-    lon: number;
-    lat: number;
+    lon: number;
+    lat: number;
 };
 list: [{
 main: {
-    aqi: number;
+    aqi: number;
 };
 components: {
-    co: number;
-    o3: number;
-    pm2_5: number;
-    pm10: number;
+    co: number;
+    o3: number;
+    pm2_5: number;
+    pm10: number;
 };
 }];
 }
@@ -76,20 +76,20 @@ components: {
 export interface AirQualityData {
 aqi: number;
 components: {
-   co: number;
-   o3: number;
-   pm2_5: number;
-   pm10: number;
+   co: number;
+   o3: number;
+   pm2_5: number;
+   pm10: number;
 };
 }
 
 interface ForecastItem {
 dt: number;
 main: {
-  temp: number;
+  temp: number;
 };
 weather: [{
-  icon: string;
+  icon: string;
 }];
 }
 
@@ -137,7 +137,8 @@ const WeatherApp: React.FC = () => {
     };
     const handleSelectCity = (city: string) => {
         handleCloseHistory();
-        setCityName(city); // Esta linha é importante para que o useEffect seja acionado
+        setCityName(city);
+        fetchWeatherDataAndForecast({ city });
     };
 
     const formatarData = (timestamp: number): string => {
@@ -182,33 +183,63 @@ const WeatherApp: React.FC = () => {
         }
     }, [unsplashApiKey]);
 
-    const fetchWeatherData = useCallback(async (location: { city: string } | { lat: number; lon: number }) => {
+    const fetchWeatherDataAndForecast = useCallback(async (location: { city?: string; lat?: number; lon?: number }) => {
         setLoading(true);
         setError(null);
 
-        let url = '';
-
-        if ('city' in location) {
-            url = `https://api.openweathermap.org/data/2.5/weather?q=${location.city}&appid=${apiKey}&units=metric&lang=pt_br`;
-        } else {
-            url = `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=${apiKey}&units=metric&lang=pt_br`;
-        }
-
         try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                if (response.status === 401) throw new Error('Chave de API inválida.');
+            const weatherQuery = location.city ? `q=${location.city}` : `lat=${location.lat}&lon=${location.lon}`;
+            const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?${weatherQuery}&appid=${apiKey}&units=metric&lang=pt_br`;
+            const weatherResponse = await fetch(weatherUrl);
+
+            if (!weatherResponse.ok) {
+                if (weatherResponse.status === 401) throw new Error('Chave de API inválida.');
                 throw new Error('Localização não encontrada.');
             }
-            const data: WeatherData = await response.json();
-            setWeatherData(data);
-            setCityName(data.name);
-            setMapCoords({ lat: data.coord.lat, lon: data.coord.lon });
+
+            const weatherData: WeatherData = await weatherResponse.json();
+            setWeatherData(weatherData);
+            setCityName(weatherData.name);
+            setMapCoords({ lat: weatherData.coord.lat, lon: weatherData.coord.lon });
             setSearchHistory(prevHistory => {
-                if (!prevHistory.includes(data.name)) return [...prevHistory, data.name];
+                if (!prevHistory.includes(weatherData.name)) return [...prevHistory, weatherData.name];
                 return prevHistory;
             });
-            fetchUnsplashImage(data.name);
+            fetchUnsplashImage(weatherData.name);
+
+            // Fetch forecast data
+            const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${weatherData.name}&appid=${apiKey}&units=metric&lang=pt_br`;
+            const forecastResponse = await fetch(forecastUrl);
+            const forecastData = await forecastResponse.json();
+            const newHourlyData = forecastData.list.slice(0, 5).map((item: ForecastItem) => ({
+                time: new Date(item.dt * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                temp: item.main.temp,
+                icon: item.weather[0].icon,
+            }));
+            setHourlyForecast(newHourlyData);
+
+            // Lógica para previsão diária (pode ser ajustada para buscar dados reais se necessário)
+            const newDailyData = [
+                { day: 'Ter.', temp: 23, icon: '02d' }, { day: 'Qua.', temp: 24, icon: '01d' },
+                { day: 'Qui.', temp: 22, icon: '09d' }, { day: 'Sex.', temp: 25, icon: '01d' },
+                { day: 'Sáb.', temp: 21, icon: '10d' }, { day: 'Dom.', temp: 20, icon: '04d' },
+                { day: 'Seg.', temp: 23, icon: '03d' },
+            ];
+            setDailyForecast(newDailyData);
+
+            // Fetch air quality data
+            const airQualityResponse = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&appid=${apiKey}`);
+            if (airQualityResponse.ok) {
+                const airQualityData: AirQualityAPIResponse = await airQualityResponse.json();
+                if (airQualityData.list.length > 0) {
+                    setAirQualityData({
+                        aqi: airQualityData.list[0].main.aqi,
+                        components: airQualityData.list[0].components,
+                    });
+                } else {
+                    setAirQualityData(null);
+                }
+            }
         } catch (err: unknown) {
             if (err instanceof Error) setError(err.message);
             else setError('Ocorreu um erro desconhecido.');
@@ -216,31 +247,31 @@ const WeatherApp: React.FC = () => {
             setLoading(false);
         }
     }, [apiKey, fetchUnsplashImage]);
+    
 
-    // **Mudança aqui:** Novo estado para a cidade inicial
-    useEffect(() => {
-        const savedHistory = localStorage.getItem('weatherSearchHistory');
-        if (savedHistory) setSearchHistory(JSON.parse(savedHistory));
+    // O useEffect agora só busca a localização inicial do usuário
+    // e o histórico salvo no localStorage na primeira renderização.
+    useEffect(() => {
+        const savedHistory = localStorage.getItem('weatherSearchHistory');
+        if (savedHistory) setSearchHistory(JSON.parse(savedHistory));
 
-        const handleSuccess = (position: GeolocationPosition) => {
-            const { latitude, longitude } = position.coords;
-            // Usa a função de busca por coordenadas
-            fetchWeatherData({ lat: latitude, lon: longitude });
-        };
+        const handleSuccess = (position: GeolocationPosition) => {
+            const { latitude, longitude } = position.coords;
+            fetchWeatherDataAndForecast({ lat: latitude, lon: longitude });
+        };
 
-        const handleError = () => {
-            console.log("Permissão de localização negada. Buscando cidade aleatória.");
-            const randomCity = brazilianCapitals[Math.floor(Math.random() * brazilianCapitals.length)];
-            // Define o nome da cidade, o useEffect abaixo irá buscar os dados
-            setCityName(randomCity);
-        };
+        const handleError = () => {
+            console.log("Permissão de localização negada. Buscando cidade aleatória.");
+            const randomCity = brazilianCapitals[Math.floor(Math.random() * brazilianCapitals.length)];
+            fetchWeatherDataAndForecast({ city: randomCity });
+        };
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
-        } else {
-            handleError();
-        }
-    }, [fetchWeatherData]);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+        } else {
+            handleError();
+        }
+    }, [fetchWeatherDataAndForecast]);
 
     useEffect(() => {
         localStorage.setItem('weatherSearchHistory', JSON.stringify(searchHistory));
@@ -283,69 +314,10 @@ const WeatherApp: React.FC = () => {
         localStorage.setItem('appTheme', theme);
     }, [theme]);
 
-    // **Mudança aqui:** Adiciona um useEffect para buscar o clima e previsão quando a cidade muda
-    useEffect(() => {
-        const fetchDataForCity = async () => {
-            if (cityName) {
-                // Fetch data for weather, forecast, and air quality
-                try {
-                    setLoading(true);
-                    const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric&lang=pt_br`);
-                    if (!weatherResponse.ok) throw new Error('Localização não encontrada.');
-                    const weatherData: WeatherData = await weatherResponse.json();
-                    setWeatherData(weatherData);
-                    setMapCoords({ lat: weatherData.coord.lat, lon: weatherData.coord.lon });
-                    setSearchHistory(prevHistory => {
-                        if (!prevHistory.includes(weatherData.name)) return [...prevHistory, weatherData.name];
-                        return prevHistory;
-                    });
-                    fetchUnsplashImage(weatherData.name);
-
-                    const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}&units=metric&lang=pt_br`);
-                    const forecastData = await forecastResponse.json();
-                    const newHourlyData = forecastData.list.slice(0, 5).map((item: ForecastItem) => ({
-                        time: new Date(item.dt * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                        temp: item.main.temp,
-                        icon: item.weather[0].icon,
-                    }));
-                    setHourlyForecast(newHourlyData);
-                    
-                    // Lógica para previsão diária (pode ser ajustada para buscar dados reais se necessário)
-                    const newDailyData = [
-                        { day: 'Ter.', temp: 23, icon: '02d' }, { day: 'Qua.', temp: 24, icon: '01d' },
-                        { day: 'Qui.', temp: 22, icon: '09d' }, { day: 'Sex.', temp: 25, icon: '01d' },
-                        { day: 'Sáb.', temp: 21, icon: '10d' }, { day: 'Dom.', temp: 20, icon: '04d' },
-                        { day: 'Seg.', temp: 23, icon: '03d' },
-                    ];
-                    setDailyForecast(newDailyData);
-                    
-                    const airQualityResponse = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&appid=${apiKey}`);
-                    if (airQualityResponse.ok) {
-                        const airQualityData: AirQualityAPIResponse = await airQualityResponse.json();
-                        if (airQualityData.list.length > 0) {
-                            setAirQualityData({
-                                aqi: airQualityData.list[0].main.aqi,
-                                components: airQualityData.list[0].components,
-                            });
-                        } else {
-                            setAirQualityData(null);
-                        }
-                    }
-                } catch (err: unknown) {
-                    if (err instanceof Error) setError(err.message);
-                    else setError('Ocorreu um erro desconhecido.');
-                } finally {
-                    setLoading(false);
-                }
-            }
-        };
-        fetchDataForCity();
-    }, [cityName, apiKey, fetchUnsplashImage]);
-    
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (cityName) fetchWeatherData({ city: cityName });
+        if (cityName) fetchWeatherDataAndForecast({ city: cityName });
     };
     
     const aqiDescription = (aqi: number): string => {
@@ -381,7 +353,6 @@ const WeatherApp: React.FC = () => {
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed',
-                transition: 'background-image 0.5s ease-in-out',
             }}
         >
             <i className="bi bi-gear-fill gear-icon" onClick={handleShowConfig}></i>
@@ -471,6 +442,7 @@ const WeatherApp: React.FC = () => {
                 <form onSubmit={handleSearch} className="glass-search-bar mt-4">
                     <input
                         type="text"
+                        id="city-search"
                         placeholder="Digite outra cidade..."
                         className="glass-input"
                         value={cityName}

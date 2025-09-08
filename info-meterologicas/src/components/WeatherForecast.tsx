@@ -1,7 +1,5 @@
 // src/components/WeatherForecast.tsx
 
-import React from 'react';
-
 interface HourlyForecastData {
     time: string;
     temp: number;
