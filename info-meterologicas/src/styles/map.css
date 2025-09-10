@@ -1,6 +1,7 @@
+/* Estilos para o mapa */
 .map-wrapper {
     width: 100%;
-    /* Altura fixa para o mapa */
+    /* Altura fluida para o mapa */
     height: 60dvh;
 }
 
@@ -13,7 +14,7 @@
     z-index: 1; /* Garante que a camada do mapa esteja acima do fundo */
 }
 
-.map-card-full{
+.map-card-full {
     height: 80dvh;
 }
 
@@ -29,4 +30,26 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+}
+
+/* --- Media Query para dispositivos com largura de até 576px --- */
+@media (max-width: 576px) {
+    .map-wrapper {
+        height: 50dvh; /* Altura menor para se adequar melhor a telas pequenas */
+    }
+
+    .map-card-full {
+        height: 60dvh; /* Altura ajustada para não dominar a tela */
+    }
+
+    .map-header {
+        flex-direction: column; /* Empilha os itens do cabeçalho */
+        gap: 0.5rem; /* Adiciona espaçamento entre os elementos */
+        margin-bottom: 0.75rem; /* Reduz a margem inferior */
+        text-align: center; /* Centraliza o texto e os ícones */
+    }
+
+    .map-container-leaflet {
+        border-radius: 0.75rem; /* Reduz o arredondamento para um visual mais compacto */
+    }
 }
