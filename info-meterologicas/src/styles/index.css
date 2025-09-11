@@ -770,32 +770,41 @@ body {
 
     /* Correção para a barra de pesquisa */
     .glass-search-bar {
-        flex-direction: column;
-        gap: 0.5rem;
-        background: none;
-        padding: 0;
-        align-items: center; /* Centraliza os itens na coluna */
-        width: 100%; /* Garante que ocupe a largura total */
-    }
-
-    .search-input-wrapper {
+        display: flex;
+        flex-direction: row; /* Volta a ser uma linha */
+        align-items: center; /* Alinha o input e o botão */
+        width: 100%;
+        max-width: none;
         background: var(--bg-destaque);
         border-radius: 50rem;
         padding: 0.3125rem;
-        width: 90%; /* Ajuste para ter um pouco de margem nas laterais */
-        max-width: 300px; /* Limite máximo para o input */
+        margin-top: 1rem;
     }
 
     .glass-input {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+        padding: 0.625rem 1.25rem;
+        font-size: 1rem;
+        flex-grow: 1; /* O input ocupa o espaço restante */
     }
-    
+
+    .glass-button {
+        /* Garante que o botão tenha o tamanho e forma desejados */
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 0.3125rem; /* Espaçamento à direita, se necessário */
+    }
+
     .glass-button-wrapper {
         display: flex;
         justify-content: center;
         gap: 1rem;
-        width: 90%; /* Ajuste para ter um pouco de margem nas laterais */
+        width: 90%;
+        margin-top: 1rem;
     }
 
     .glass-button-wrapper .glass-btn {
