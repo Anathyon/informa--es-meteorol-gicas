@@ -36,6 +36,11 @@
     --border-color: #ffffff;
 }
 
+body {
+    background-attachment: fixed;
+    background-size: cover;
+}
+
 /* CONTAINER PRINCIPAL E ALINHAMENTO */
 .weather-container {
     display: flex;
@@ -660,13 +665,13 @@
 }
 
 .chart-card-full {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 350px; /* Altura do card, ajuste se necessário */
-  margin-top: 1.5rem;
-  padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 350px; /* Altura do card, ajuste se necessário */
+    margin-top: 1.5rem;
+    padding: 1.5rem;
 }
 
 @media (max-width: 576px) {
@@ -733,50 +738,52 @@
         font-size: 1.1em;
     }
 
+    /* Correção para previsão horária (Image 4) */
     .hourly-forecast-row {
-        justify-content: flex-start;
-        gap: 0.75rem;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding-bottom: 0.5rem;
-        scroll-snap-type: x mandatory;
-    }
-
-    .hourly-forecast-row::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .hourly-forecast-row::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.3);
-        border-radius: 3px;
+        justify-content: center; /* Centraliza os itens */
+        gap: 1rem; /* Espaçamento entre os cards */
+        flex-wrap: wrap; /* Permite que os cards quebrem a linha */
+        /* Remova overflow-x: auto e scroll-snap-type se não quiser rolagem horizontal */
+        overflow-x: hidden; /* Remove a barra de rolagem horizontal */
     }
 
     .forecast-item {
         padding: 0.75rem;
-        flex: 0 0 auto;
-        width: 6rem;
+        /* Flex-basis para 2 colunas com gap */
+        flex: 0 0 calc(50% - 0.5rem); 
+        width: auto; /* Deixa o flex controlar a largura */
     }
-
+    
+    /* Correção para previsão de 7 dias (Image 3) */
     .daily-forecast-row {
-        gap: 0.5rem;
+        flex-wrap: wrap; 
+        justify-content: space-between; /* Espaçamento para 3 colunas */
+        gap: 1rem 0.5rem; /* Espaçamento vertical e horizontal */
     }
 
     .daily-forecast-item {
         padding: 0.5rem;
+        /* Flex-basis para 3 colunas com gap */
+        flex: 1 1 calc(33.333% - 0.666rem); /* 3 itens por linha, ajustado para gap */
+        min-width: 80px; /* Garante um tamanho mínimo para o item */
     }
 
+    /* Correção para a barra de pesquisa */
     .glass-search-bar {
         flex-direction: column;
         gap: 0.5rem;
         background: none;
         padding: 0;
+        align-items: center; /* Centraliza os itens na coluna */
+        width: 100%; /* Garante que ocupe a largura total */
     }
 
     .search-input-wrapper {
         background: var(--bg-destaque);
         border-radius: 50rem;
         padding: 0.3125rem;
-        width: 100%;
+        width: 90%; /* Ajuste para ter um pouco de margem nas laterais */
+        max-width: 300px; /* Limite máximo para o input */
     }
 
     .glass-input {
@@ -788,6 +795,7 @@
         display: flex;
         justify-content: center;
         gap: 1rem;
+        width: 90%; /* Ajuste para ter um pouco de margem nas laterais */
     }
 
     .glass-button-wrapper .glass-btn {
@@ -826,14 +834,17 @@
         padding: 0.5rem 1rem;
     }
 
+    /* Correção para os cards de qualidade do ar */
     .air-quality-container {
         padding: 1rem;
-        flex-direction: column;
+        flex-direction: column; /* Empilha os itens verticalmente */
+        align-items: center; /* Centraliza os itens */
     }
 
     .air-quality-content-wrapper {
         flex-direction: column;
         gap: 1rem;
+        width: 100%; /* Garante que o wrapper ocupe a largura total */
     }
 
     .air-quality-left {
@@ -847,12 +858,17 @@
     }
 
     .air-quality-right {
-        width: 100%;
+        width: 100%; /* Ocupa a largura total disponível */
         min-width: unset;
+        gap: 0.5rem; /* Ajusta o espaçamento entre os itens da lista */
+    }
+
+    .air-quality-item {
+        padding: 0.5rem; /* Ajusta o padding para telas menores */
     }
 
     .map-card-full {
-        height: 60dvh;
+        height: 70dvh; /* Aumenta a altura para melhor visualização */
     }
 
     .clock-display {
@@ -864,5 +880,19 @@
         padding: 0.5rem 0.75rem;
         font-size: clamp(1.2em, 5vw, 2em);
         min-width: 3.5rem;
+    }
+}
+
+/* Para telas maiores que 576px e menores que 768px (se necessário ajustar algo específico) */
+@media (min-width: 577px) and (max-width: 767px) {
+    .daily-forecast-row {
+        justify-content: space-around; /* Mantém o espaçamento original ou ajusta */
+        gap: 0.8rem; /* Ajuste o gap conforme necessário */
+    }
+    .daily-forecast-item {
+        flex: 1 1 calc(33.333% - 0.533rem); /* Exemplo para 3 colunas em tablets */
+    }
+    .map-card-full {
+        height: 75dvh; /* Ajuste a altura do mapa para tablets */
     }
 }
