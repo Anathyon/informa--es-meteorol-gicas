@@ -773,7 +773,7 @@ body {
         display: flex;
         flex-direction: row; /* Volta a ser uma linha */
         align-items: center; /* Alinha o input e o botão */
-        width: 100%;
+        width: 80%;
         max-width: none;
         background: var(--bg-destaque);
         border-radius: 50rem;
