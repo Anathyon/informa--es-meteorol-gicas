@@ -791,7 +791,7 @@ body {
         /* Garante que o botão tenha o tamanho e forma desejados */
         width: 2.5rem;
         height: 2.5rem;
-        padding: 0;
+        padding: 10%;
         border-radius: 50%;
         display: flex;
         justify-content: center;
