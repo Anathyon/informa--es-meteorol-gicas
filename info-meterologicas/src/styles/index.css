@@ -773,7 +773,7 @@ body {
         display: flex;
         flex-direction: row; /* Volta a ser uma linha */
         align-items: center; /* Alinha o input e o botão */
-        width: 80%;
+        width: 100%;
         max-width: none;
         background: var(--bg-destaque);
         border-radius: 50rem;
@@ -797,6 +797,7 @@ body {
         justify-content: center;
         align-items: center;
         margin-right: 10%;
+        position: relative;
     }
 
     .glass-button-wrapper {

@@ -443,7 +443,7 @@ const WeatherApp: React.FC = () => {
                     <input
                         type="text"
                         id="city-search"
-                        placeholder="Digite outra cidade..."
+                        placeholder="Digite outro local..."
                         className="glass-input"
                         value={cityName}
                         onChange={(e) => setCityName(e.target.value)}
