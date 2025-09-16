@@ -796,7 +796,7 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
-        /* margin-right: 0.3125rem; */
+        margin-left: 2%;
     }
 
     .glass-button-wrapper {
