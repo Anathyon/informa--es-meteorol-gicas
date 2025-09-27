@@ -45,8 +45,8 @@ O projeto combina **dados confiáveis**, **temas dinâmicos** e **design respons
 | Desktop             | Mobile              |
 |---------------------|---------------------|
 <div align="center">
-  <img src=".public/assets/app-desktop.png" width="400" alt="Versão Desktop" />
-  <img src="./public/assets/app-mobile.jpg" width="250" alt="Versão Mobile" />
+  <img src="https://github.com/Anathyon/informa--es-meteorol-gicas/blob/main/info-meterologicas/public/assets/app-desktop.png" width="400" alt="Versão Desktop" />
+  <img src="https://github.com/Anathyon/informa--es-meteorol-gicas/blob/main/info-meterologicas/public/assets/app-mobile.jpg" width="250" alt="Versão Mobile" />
 </div>
 
 ---
