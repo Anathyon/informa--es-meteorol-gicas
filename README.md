@@ -45,8 +45,8 @@ O projeto combina **dados confiáveis**, **temas dinâmicos** e **design respons
 | Desktop             | Mobile              |
 |---------------------|---------------------|
 <div align="center">
-  <img src="./assets/app-desktop.png" width="400" alt="Versão Desktop" />
-  <img src="./assets/app-mobile.png" width="200" alt="Versão Mobile" />
+  <img src=".public/assets/app-desktop.png" width="400" alt="Versão Desktop" />
+  <img src="./public/assets/app-mobile.jpg" width="250" alt="Versão Mobile" />
 </div>
 
 ---
