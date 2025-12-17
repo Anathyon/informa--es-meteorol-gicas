@@ -1,0 +1,142 @@
+# ========================================
+# CACHE E PERFORMANCE
+# ========================================
+
+# Habilitar compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Cache para diferentes tipos de arquivo
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Imagens - 1 ano
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS e JS - 1 mês
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    
+    # Fontes - 1 ano
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    
+    # HTML - 1 hora
+    ExpiresByType text/html "access plus 1 hour"
+    
+    # Manifest e service worker - sem cache
+    ExpiresByType application/manifest+json "access plus 0 seconds"
+</IfModule>
+
+# Cache headers alternativos
+<IfModule mod_headers.c>
+    # Cache para assets estáticos
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$">
+        Header set Cache-Control "public, max-age=31536000"
+    </FilesMatch>
+    
+    # Sem cache para HTML
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </FilesMatch>
+</IfModule>
+
+# ========================================
+# SEGURANÇA
+# ========================================
+
+# Bloquear acesso a arquivos sensíveis
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|env)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Prevenir clickjacking
+<IfModule mod_headers.c>
+    Header always append X-Frame-Options SAMEORIGIN
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# Content Security Policy básico
+<IfModule mod_headers.c>
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://api.openweathermap.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: http:; connect-src 'self' https://api.openweathermap.org; frame-src 'none';"
+</IfModule>
+
+# Bloquear bots maliciosos
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_USER_AGENT} (libwww-perl|wget|python|nikto|curl|scan|java|winhttp|clshttp|loader) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (;|<|>|'|"|\)|\(|%0A|%0D|%22|%27|%28|%3C|%3E|%00).*(libwww-perl|wget|python|nikto|curl|scan|java|winhttp|HTTrack|clshttp|archiver|loader|email|harvest|extract|grab|miner) [NC,OR]
+    RewriteCond %{THE_REQUEST} (\?|\*|%2a)+(%20+|\\s+|%20+\\s+|\\s+%20+|\\s+%20+\\s+)(http|https) [NC,OR]
+    RewriteCond %{THE_REQUEST} etc/passwd [NC,OR]
+    RewriteCond %{THE_REQUEST} cgi-bin [NC,OR]
+    RewriteCond %{THE_REQUEST} (%0A|%0D) [NC]
+    RewriteRule .* - [F]
+</IfModule>
+
+# Prevenir hotlinking de imagens
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteCond %{HTTP_REFERER} !^https?://(www\.)?seu-dominio\.com [NC]
+    RewriteRule \.(jpg|jpeg|png|gif|svg)$ - [F]
+</IfModule>
+
+# Limitar tamanho de upload
+LimitRequestBody 10485760
+
+# ========================================
+# SPA ROUTING (REACT)
+# ========================================
+
+# Redirecionar todas as rotas para index.html (React Router)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Handle Angular and React Router
+    RewriteRule ^index\.html$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.html [L]
+</IfModule>
+
+# ========================================
+# OTIMIZAÇÕES ADICIONAIS
+# ========================================
+
+# Remover assinatura do servidor
+ServerTokens Prod
+ServerSignature Off
+
+# Desabilitar ETags
+<IfModule mod_headers.c>
+    Header unset ETag
+</IfModule>
+FileETag None
