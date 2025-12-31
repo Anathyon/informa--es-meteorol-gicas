@@ -1,16 +1,6 @@
 // src/components/WeatherForecast.tsx
 
-interface HourlyForecastData {
-    time: string;
-    temp: number;
-    icon: string;
-}
-
-interface DailyForecastData {
-    day: string;
-    temp: number;
-    icon: string;
-}
+import type { HourlyForecastData, DailyForecastData } from '../types';
 
 interface WeatherForecastProps {
     hourlyData: HourlyForecastData[];

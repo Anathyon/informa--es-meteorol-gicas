@@ -1,5 +1,5 @@
 import React from 'react';
-import type { WeatherData } from './WeatherApp';
+import type { WeatherData } from '../types';
 
 interface WeatherDetailsProps {
     data: WeatherData;

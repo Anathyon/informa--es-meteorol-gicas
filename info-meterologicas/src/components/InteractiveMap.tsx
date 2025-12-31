@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Form } from 'react-bootstrap';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+
 import '../styles/map.css';
 import MapController from './MapController'; // Importa o componente de controle do mapa
 
 // Solução para o problema de ícone ausente do Leaflet com Webpack/Vite
-// @ts-expect-error: Bug de tipo do Leaflet
-delete L.Icon.Default.prototype._get
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
+
 
 interface InteractiveMapProps {
     lat: number;
