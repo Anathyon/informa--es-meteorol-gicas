@@ -3,6 +3,9 @@ logs
 *.log
 npm-debug.log*
 yarn-debug.log*
+*_errors.log
+*_errors.txt
+test_output.txt
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
