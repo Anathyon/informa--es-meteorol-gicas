@@ -2,6 +2,8 @@
   "extends": "./tsconfig.test.json",
   "compilerOptions": {
     "verbatimModuleSyntax": false,
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    "module": "esnext"
+  },
+  "exclude": ["src/env.ts"]
 }

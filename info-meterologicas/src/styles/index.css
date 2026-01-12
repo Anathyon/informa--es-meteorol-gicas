@@ -22,10 +22,10 @@
 
 .tarde {
     --background: linear-gradient(180deg, #661d00 0%, #a14f17 30%, #e45015 60%, #661d00 100%);
-    --letter-color: #ffffff;
-    --main-color: linear-gradient(120deg, #412410a2, #f74e009a);
-    --bg-destaque: #ffffff7c;
-    --border-color: #fff;
+    --letter-color: #000000;
+    --main-color: linear-gradient(120deg, #cf7749a2, #f57f49e0);
+    --bg-destaque: #00000030;
+    --border-color: #000000;
 }
 
 .noite {
