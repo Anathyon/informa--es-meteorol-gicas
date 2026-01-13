@@ -19,12 +19,20 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .idea
+*.sw?
+.env
+
+# Test
+coverage
+test_output.txt
+test-results
+junit.xml
+
+# Misc
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
-*.sw?
 .env
 
 # Testing

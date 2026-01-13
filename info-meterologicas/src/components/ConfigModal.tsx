@@ -1,33 +1,35 @@
-import { Modal, Button, Form, FormControl } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form, FormControl } from 'react-bootstrap';
+import { useWeatherStore } from '../store/weatherStore';
 
 interface ConfigModalProps {
     show: boolean;
     handleClose: () => void;
-    currentTheme: string;
-    setAppTheme: (theme: string) => void;
 }
 
-const ConfigModal: React.FC<ConfigModalProps> = ({ show, handleClose, currentTheme, setAppTheme }) => {
-    const [selectedTheme, setSelectedTheme] = useState<string>(currentTheme || 'automatico');
-    const [autoUpdate, setAutoUpdate] = useState<boolean>(true);
+const ConfigModal: React.FC<ConfigModalProps> = ({ show, handleClose }) => {
+    const { 
+        theme, 
+        setTheme, 
+        isAutoUpdateEnabled, 
+        toggleAutoUpdate 
+    } = useWeatherStore();
 
+    const [selectedTheme, setSelectedTheme] = useState<string>(theme);
+
+    // Sync local state when store theme changes or modal opens
     useEffect(() => {
-        if (show) {
-            setSelectedTheme(currentTheme);
-        }
-    }, [show, currentTheme]);
+        setSelectedTheme(theme);
+    }, [theme, show]);
 
-    // Corrigido a tipagem do evento para FormControlElement
     const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const newTheme = event.target.value;
         setSelectedTheme(newTheme);
-        setAppTheme(newTheme);
+        setTheme(newTheme);
     };
 
     const handleAutoUpdateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAutoUpdate(event.target.checked);
-        console.log('Atualização automática:', event.target.checked);
+        toggleAutoUpdate(event.target.checked);
     };
 
     return (
@@ -38,11 +40,11 @@ const ConfigModal: React.FC<ConfigModalProps> = ({ show, handleClose, currentThe
             <Modal.Body className="modal-body-custom">
                 <Form>
                     <Form.Group className="mb-3 d-flex justify-content-between align-items-center">
-                        <Form.Label className="config-label mb-0">Atualização Automática</Form.Label>
+                        <Form.Label className="config-label mb-0">Atualização Automática (15 min)</Form.Label>
                         <Form.Check
                             type="switch"
                             id="autoUpdateSwitch"
-                            checked={autoUpdate}
+                            checked={isAutoUpdateEnabled}
                             onChange={handleAutoUpdateChange}
                             className="config-switch"
                         />
