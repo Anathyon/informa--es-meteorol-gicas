@@ -25,21 +25,28 @@ ChartJS.register(
 
 interface TemperatureChartProps {
     data: HourlyForecastData[];
+    visualTheme: string;
 }
 
-const TemperatureChart: React.FC<TemperatureChartProps> = ({ data }) => {
-    
+const TemperatureChart: React.FC<TemperatureChartProps> = ({ data, visualTheme }) => {
+    // Determine colors based on visual theme
+    const isDarkText = visualTheme === 'manha' || visualTheme === 'tarde';
+    const mainColor = isDarkText ? '#000000' : '#ffffff';
+    const gridColor = isDarkText ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
+    const tooltipBg = isDarkText ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.8)';
+    const tooltipText = isDarkText ? '#000' : '#fff';
+
     const chartData = {
         labels: data.map(item => item.time),
         datasets: [
             {
                 label: 'Temperatura (°C)',
                 data: data.map(item => item.temp),
-                borderColor: 'rgba(255, 255, 255, 0.9)',
-                backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                pointBackgroundColor: '#fff',
-                pointBorderColor: '#fff',
-                tension: 0.4, // Curvas suaves
+                borderColor: mainColor,
+                backgroundColor: isDarkText ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)',
+                pointBackgroundColor: mainColor,
+                pointBorderColor: mainColor,
+                tension: 0.4,
             },
         ],
     };
@@ -49,31 +56,33 @@ const TemperatureChart: React.FC<TemperatureChartProps> = ({ data }) => {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: false, // Esconder legenda para visual mais limpo
+                display: false,
             },
             title: {
                 display: true,
                 text: 'Previsão de Temperatura',
-                color: '#fff',
+                color: mainColor,
                 font: {
                     size: 16
                 }
             },
             tooltip: {
-                backgroundColor: 'rgba(0,0,0,0.7)',
-                titleColor: '#fff',
-                bodyColor: '#fff',
+                backgroundColor: tooltipBg,
+                titleColor: tooltipText,
+                bodyColor: tooltipText,
+                borderColor: gridColor,
+                borderWidth: 1
             }
         },
         scales: {
             x: {
-                ticks: { color: '#fff' },
+                ticks: { color: mainColor },
                 grid: { display: false }
             },
             y: {
-                ticks: { color: '#fff' },
+                ticks: { color: mainColor },
                 grid: { 
-                    color: 'rgba(255, 255, 255, 0.1)' 
+                    color: gridColor 
                 }
             }
         }
