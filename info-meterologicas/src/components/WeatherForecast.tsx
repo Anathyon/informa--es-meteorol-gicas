@@ -29,7 +29,10 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ hourlyData, dailyData
                         <div key={index} className="daily-forecast-item">
                             <span className="daily-day">{item.day}</span>
                             <img src={`https://openweathermap.org/img/wn/${item.icon}.png`} alt="Ícone do clima" />
-                            <span className="daily-temp">{Math.round(item.temp)}°</span>
+                            <div className="daily-temp-range">
+                                <span className="max-temp">{Math.round(item.maxTemp)}°</span>
+                                <span className="min-temp">{Math.round(item.minTemp)}°</span>
+                            </div>
                         </div>
                     ))}
                 </div>

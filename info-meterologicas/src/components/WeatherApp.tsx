@@ -61,6 +61,24 @@ const WeatherApp: React.FC = () => {
         }
     };
 
+    const handleLocationClick = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    fetchWeatherData({ lat: latitude, lon: longitude });
+                    setCitySearchInput('');
+                },
+                (error) => {
+                    console.error("Erro ao obter localização:", error);
+                    alert("Não foi possível obter sua localização. Verifique se as permissões estão ativadas.");
+                }
+            );
+        } else {
+            alert("Seu navegador não suporta geolocalização.");
+        }
+    };
+
     // Auto Update Effect
     // Checks every 15 minutes if auto-update is enabled and refreshes data
     useEffect(() => {
@@ -262,6 +280,9 @@ const WeatherApp: React.FC = () => {
                 </form>
 
                 <div className="d-flex justify-content-center gap-2 mt-3">
+                    <Button className="btn btn-secondary glass-btn" onClick={handleLocationClick}>
+                        <i className="bi bi-geo-alt-fill"></i> Localização Atual
+                    </Button>
                     <Button className="btn btn-secondary glass-btn" onClick={openHistoryModal}>
                         <i className="bi bi-clock-history"></i> Histórico
                     </Button>

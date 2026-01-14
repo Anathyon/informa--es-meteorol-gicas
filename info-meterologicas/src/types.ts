@@ -36,7 +36,8 @@ export interface HourlyForecastData {
 
 export interface DailyForecastData {
     day: string;
-    temp: number;
+    minTemp: number;
+    maxTemp: number;
     icon: string;
 }
 
@@ -71,9 +72,11 @@ export interface AirQualityData {
 export interface ForecastItem {
     dt: number;
     main: {
-      temp: number;
+        temp: number;
+        temp_min: number;
+        temp_max: number;
     };
     weather: [{
-      icon: string;
+        icon: string;
     }];
 }

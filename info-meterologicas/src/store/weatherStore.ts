@@ -8,10 +8,9 @@ import type {
 } from '../types';
 import {
     fetchCurrentWeather,
-    fetchForecast,
+    fetchForecastData,
     fetchUnsplashImage,
-    fetchAirQuality,
-    getDailyForecastMock
+    fetchAirQuality
 } from '../services/weatherApi';
 
 interface WeatherState {
@@ -91,20 +90,17 @@ export const useWeatherStore = create<WeatherState>()(
                     const weatherData = await fetchCurrentWeather(query);
 
                     // Parallel Requests for secondary data
-                    const [bgUrl, hourlyData, airQuality] = await Promise.all([
+                    const [bgUrl, forecastData, airQuality] = await Promise.all([
                         fetchUnsplashImage(weatherData.name),
-                        fetchForecast(weatherData.name),
+                        fetchForecastData(`lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}`),
                         fetchAirQuality(weatherData.coord.lat, weatherData.coord.lon)
                     ]);
-
-                    // Mock Daily Forecast (API limitation mitigation)
-                    const dailyData = getDailyForecastMock();
 
                     // Update State
                     set({
                         weatherData,
-                        hourlyForecast: hourlyData,
-                        dailyForecast: dailyData,
+                        hourlyForecast: forecastData.hourly,
+                        dailyForecast: forecastData.daily,
                         airQuality,
                         backgroundImageUrl: bgUrl,
                         loading: false,

@@ -58,32 +58,71 @@ export const fetchCurrentWeather = async (query: string): Promise<WeatherData> =
  * @param cityName Nome da cidade.
  * @returns Lista de previsões horárias formatadas.
  */
-export const fetchForecast = async (cityName: string): Promise<HourlyForecastData[]> => {
-    const response = await fetch(`${BASE_URL}/forecast?q=${cityName}&appid=${API_KEY}&units=metric&lang=pt_br`);
+/**
+ * Processa a lista de previsões de 3h para obter uma previsão diária agregada.
+ * Calcula temperatura mínima e máxima para cada dia e escolhe o ícone mais frequente.
+ */
+const processDailyForecast = (list: ForecastItem[]): DailyForecastData[] => {
+    const dailyMap = new Map<string, { min: number; max: number; icons: string[] }>();
+
+    list.forEach(item => {
+        const date = new Date(item.dt * 1000).toLocaleDateString('pt-BR', { weekday: 'short' });
+
+        if (!dailyMap.has(date)) {
+            dailyMap.set(date, {
+                min: item.main.temp_min,
+                max: item.main.temp_max,
+                icons: [item.weather[0].icon]
+            });
+        } else {
+            const current = dailyMap.get(date)!;
+            current.min = Math.min(current.min, item.main.temp_min);
+            current.max = Math.max(current.max, item.main.temp_max);
+            current.icons.push(item.weather[0].icon);
+        }
+    });
+
+    return Array.from(dailyMap.entries()).map(([day, data]) => {
+        // Encontra o ícone mais frequente (moda)
+        const iconCounts = data.icons.reduce((acc, icon) => {
+            acc[icon] = (acc[icon] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+
+        const mostFrequentIcon = Object.keys(iconCounts).reduce((a, b) => iconCounts[a] > iconCounts[b] ? a : b);
+
+        return {
+            day: day.charAt(0).toUpperCase() + day.slice(1), // Capitaliza o dia
+            minTemp: data.min,
+            maxTemp: data.max,
+            icon: mostFrequentIcon
+        };
+    }).slice(0, 7); // Garante no máximo 7 dias
+};
+
+/**
+ * Busca a previsão do tempo completa e retorna dados horários e diários.
+ * @param query Query string formatada (city ou lat/lon). *Alterado para aceitar query genérica para ser consistente*
+ * @returns Objeto com previsões horárias e diárias.
+ */
+export const fetchForecastData = async (query: string): Promise<{ hourly: HourlyForecastData[], daily: DailyForecastData[] }> => {
+    const response = await fetch(`${BASE_URL}/forecast?${query}&appid=${API_KEY}&units=metric&lang=pt_br`);
     if (!response.ok) throw new Error('Erro ao buscar previsão.');
 
     const data = await response.json();
-    // Pega as primeiras 5 previsões (próximas horas)
-    return data.list.slice(0, 5).map((item: ForecastItem) => ({
+
+    // Previsão Horária (próximas 5 entradas = 15 horas aprx, mas mantendo 5 itens como antes)
+    const hourly: HourlyForecastData[] = data.list.slice(0, 5).map((item: ForecastItem) => ({
         time: new Date(item.dt * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
         temp: item.main.temp,
         icon: item.weather[0].icon,
     }));
-};
 
-/**
- * Retorna dados mockados para previsão diária.
- * TODO: Implementar lógica real de agragação se necessário.
- */
-export const getDailyForecastMock = (): DailyForecastData[] => [
-    { day: 'Ter.', temp: 23, icon: '02d' },
-    { day: 'Qua.', temp: 24, icon: '01d' },
-    { day: 'Qui.', temp: 22, icon: '09d' },
-    { day: 'Sex.', temp: 25, icon: '01d' },
-    { day: 'Sáb.', temp: 21, icon: '10d' },
-    { day: 'Dom.', temp: 20, icon: '04d' },
-    { day: 'Seg.', temp: 23, icon: '03d' },
-];
+    // Previsão Diária Agregada
+    const daily = processDailyForecast(data.list);
+
+    return { hourly, daily };
+};
 
 /**
  * Busca dados de qualidade do ar.
