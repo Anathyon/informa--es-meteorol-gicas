@@ -41,6 +41,10 @@ body {
     background-size: cover;
 }
 
+.icon-color {
+    color: var(--letter-color);
+}
+
 /* CONTAINER PRINCIPAL E ALINHAMENTO */
 .weather-container {
     display: flex;
@@ -906,4 +910,34 @@ body {
     .map-card-full {
         height: 75dvh; /* Ajuste a altura do mapa para tablets */
     }
+}
+
+/* --- Voice Search Modal --- */
+.voice-search-modal .modal-dialog {
+    max-width: 400px;
+}
+
+.glass-modal-content {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 2rem !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+    overflow: hidden;
+}
+
+.glass-modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(4px);
+}
+
+.voice-search-modal .modal-body {
+    padding: 3rem 2rem !important;
+}
+
+/* Microphone button in search bar tweak */
+.glass-search-bar .glass-button i.bi-mic {
+    font-size: 1.2rem;
+    color: var(--letter-color);
 }

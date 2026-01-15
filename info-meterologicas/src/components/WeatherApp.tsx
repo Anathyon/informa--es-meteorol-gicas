@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 // Components
 import HistoryModal from './HistoryModal';
 import ConfigModal from './ConfigModal';
+import VoiceSearchModal from './VoiceSearchModal';
 import WeatherDetails from './WeatherDetails';
 import WeatherForecast from './WeatherForecast';
 import InteractiveMap from './InteractiveMap';
@@ -16,8 +17,14 @@ import TemperatureChart from './TemperatureChart';
 // Store
 import { useWeatherStore } from '../store/weatherStore';
 
+// Hooks
+import useVoiceSearch from '../hooks/useVoiceSearch';
+
 // Utils
 import { BRAZILIAN_CAPITALS } from '../constants/cities';
+
+// Styles
+import '../styles/index.css';
 
 const WeatherApp: React.FC = () => {
     // Store State and Actions
@@ -40,6 +47,7 @@ const WeatherApp: React.FC = () => {
     // Local UI State
     const [showHistory, setShowHistory] = useState<boolean>(false);
     const [showConfig, setShowConfig] = useState<boolean>(false);
+    const [showVoiceModal, setShowVoiceModal] = useState<boolean>(false);
     const [citySearchInput, setCitySearchInput] = useState<string>('');
 
     // Handlers
@@ -79,6 +87,40 @@ const WeatherApp: React.FC = () => {
         }
     };
 
+    // Voice Search Handler
+    const handleVoiceResult = React.useCallback((transcript: string) => {
+        // Strip punctuation (optional, but good for search)
+        const cleanTranscript = transcript.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
+        setCitySearchInput(cleanTranscript);
+        setShowVoiceModal(false);
+        fetchWeatherData({ city: cleanTranscript });
+    }, [fetchWeatherData]);
+
+    const handleVoiceError = React.useCallback((err: string) => {
+        console.error("Voice search error:", err);
+    }, []);
+
+    const { 
+        isListening, 
+        transcript, 
+        startListening, 
+        stopListening, 
+        error: voiceError 
+    } = useVoiceSearch({
+        onResult: handleVoiceResult,
+        onError: handleVoiceError
+    });
+
+    const handleVoiceClick = () => {
+        setShowVoiceModal(true);
+        startListening();
+    };
+
+    const handleCloseVoiceModal = () => {
+        stopListening();
+        setShowVoiceModal(false);
+    };
+
     // Auto Update Effect
     // Checks every 15 minutes if auto-update is enabled and refreshes data
     useEffect(() => {
@@ -99,26 +141,39 @@ const WeatherApp: React.FC = () => {
     }, [isAutoUpdateEnabled, weatherData, fetchWeatherData]);
 
     // Initial Load (Geolocation)
-    // Tries to get user location; falls back to a random capital if denied/error
+    // Tries to get user location immediately on mount
     useEffect(() => {
+        // If we already have data, don't trigger automatic fetch again 
+        // (e.g. if returning from another page/modal state)
+        if (weatherData) return;
+
         const handleSuccess = (position: GeolocationPosition) => {
             const { latitude, longitude } = position.coords;
+            console.log("Localização obtida com sucesso:", latitude, longitude);
             fetchWeatherData({ lat: latitude, lon: longitude });
         };
 
-        const handleError = () => {
-            console.log("Permissão de localização negada. Buscando cidade aleatória.");
+        const handleError = (error: GeolocationPositionError) => {
+            console.warn("Erro ou permissão negada para localização:", error.message);
+            // Fallback to a random capital if geolocation is not available
             const randomCity = BRAZILIAN_CAPITALS[Math.floor(Math.random() * BRAZILIAN_CAPITALS.length)];
-            fetchWeatherData({ city: randomCity }).then(() => setCitySearchInput(randomCity)).catch(() => {});
+            fetchWeatherData({ city: randomCity })
+                .then(() => setCitySearchInput(randomCity))
+                .catch((err) => console.error("Erro no fallback de cidade:", err));
         };
 
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+            // Options for high accuracy and timeout
+            navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            });
         } else {
-            handleError();
+            handleError({ code: 0, message: "Geolocalização não suportada", PERMISSION_DENIED: 1, POSITION_UNAVAILABLE: 2, TIMEOUT: 3 } as GeolocationPositionError);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Executar apenas uma vez na montagem
+    }, []); // Run only on mount
 
     // Helpers para UI de Qualidade do Ar
     const aqiDescription = (aqi: number): string => {
@@ -274,8 +329,11 @@ const WeatherApp: React.FC = () => {
                         value={citySearchInput}
                         onChange={(e) => setCitySearchInput(e.target.value)}
                     />
+                     <button type="button" className="glass-button me-2" onClick={handleVoiceClick} title="Pesquisa por voz">
+                        <i className="bi bi-mic p-2"></i>
+                    </button>
                     <button type="submit" className="glass-button">
-                        <i className="bi bi-search" style={{color:"#000"}}></i>
+                        <i className="bi bi-search icon-color"></i>
                     </button>
                 </form>
 
@@ -303,6 +361,13 @@ const WeatherApp: React.FC = () => {
             <ConfigModal 
                 show={showConfig} 
                 handleClose={handleCloseConfig} 
+            />
+            <VoiceSearchModal
+                show={showVoiceModal}
+                onHide={handleCloseVoiceModal}
+                transcript={transcript}
+                isListening={isListening}
+                error={voiceError}
             />
         </div>
     );
