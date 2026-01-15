@@ -26,3 +26,16 @@ if (rootElement) {
 } else {
   throw new Error("Root element not found");
 }
+
+// Registro do Service Worker para PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('SW registrado com sucesso:', registration);
+      })
+      .catch(error => {
+        console.log('Erro ao registrar SW:', error);
+      });
+  });
+}
