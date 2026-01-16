@@ -8,9 +8,10 @@ interface VoiceSearchModalProps {
     transcript: string;
     isListening: boolean;
     error: string | null;
+    onRetry: () => void;
 }
 
-const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ show, onHide, transcript, isListening, error }) => {
+const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ show, onHide, transcript, isListening, error, onRetry }) => {
     return (
         <Modal 
             show={show} 
@@ -24,7 +25,7 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ show, onHide, trans
                 <motion.div
                     animate={isListening ? {
                         scale: [1, 1.2, 1],
-                        borderColor: ["#ffff", "#00d2ff", "#ff"]
+                        borderColor: ["#ffffff", "#00d2ff", "#ffffff"]
                     } : {}}
                     transition={{
                         duration: 1.5,
@@ -40,18 +41,22 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ show, onHide, trans
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginBottom: '2rem',
-                        boxShadow: '0 0 20px rgba(255, 255, 255, 0.3)'
+                        boxShadow: isListening ? '0 0 25px rgba(0, 210, 255, 0.5)' : '0 0 20px rgba(255, 255, 255, 0.3)',
+                        backgroundColor: error ? 'rgba(220, 53, 69, 0.1)' : 'transparent'
                     }}
                 >
-                     <i className={`bi bi-mic-fill fs-1 ${error ? 'text-danger' : 'text-white'}`}></i>
+                     <i className={`bi bi-${error ? 'mic-mute-fill' : 'mic-fill'} fs-1 ${error ? 'text-danger' : 'text-white'}`}></i>
                 </motion.div>
 
                 {error ? (
-                    <p className="text-danger fs-5">{error}</p>
+                    <div className="mb-3">
+                        <p className="text-danger fs-5 mb-1">{error}</p>
+                        <p className="text-white-50 small">Não conseguimos captar sua voz corretamente.</p>
+                    </div>
                 ) : (
                     <>
                         <h4 className="text-white mb-3">
-                            {isListening ? 'Ouvindo...' : 'Processando...'}
+                            {isListening ? 'Ouvindo...' : transcript ? 'Processando...' : 'Aguardando áudio...'}
                         </h4>
                         <div style={{ minHeight: '3em' }}>
                             <p className="text-white-50 fst-italic fs-5">
@@ -61,12 +66,23 @@ const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ show, onHide, trans
                     </>
                 )}
                 
-                <button 
-                    className="btn btn-outline-light mt-4 px-4 rounded-pill"
-                    onClick={onHide}
-                >
-                    Cancelar
-                </button>
+                <div className="d-flex gap-3 mt-4">
+                    {(error || (!isListening && !transcript)) && (
+                        <button 
+                            className="btn btn-primary rounded-pill px-4"
+                            onClick={onRetry}
+                        >
+                            <i className="bi bi-arrow-clockwise me-2"></i>
+                            Tentar novamente
+                        </button>
+                    )}
+                    <button 
+                        className="btn btn-outline-light px-4 rounded-pill"
+                        onClick={onHide}
+                    >
+                        Cancelar
+                    </button>
+                </div>
             </Modal.Body>
         </Modal>
     );

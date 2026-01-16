@@ -105,11 +105,16 @@ const useVoiceSearch = ({ onResult, onError }: UseVoiceSearchProps): UseVoiceSea
     }, []); // Only initialize once
 
     const startListening = useCallback(() => {
+        setIsListening(false);
+        setError(null);
+        setTranscript('');
+
         if (recognitionRef.current) {
             try {
                 recognitionRef.current.start();
             } catch (e) {
                 console.error("Error starting recognition:", e);
+                // If already started, it might throw, so we catch it
             }
         } else {
             setError("Reconhecimento de voz não suportado neste navegador.");

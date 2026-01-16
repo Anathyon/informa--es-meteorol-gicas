@@ -368,6 +368,7 @@ const WeatherApp: React.FC = () => {
                 transcript={transcript}
                 isListening={isListening}
                 error={voiceError}
+                onRetry={startListening}
             />
         </div>
     );

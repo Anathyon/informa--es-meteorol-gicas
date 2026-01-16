@@ -9,6 +9,7 @@ describe('VoiceSearchModal', () => {
         transcript: '',
         isListening: true,
         error: null,
+        onRetry: jest.fn(),
     };
 
     it('should render the modal with "Ouvindo..." when isListening is true', () => {
