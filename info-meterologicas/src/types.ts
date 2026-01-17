@@ -26,6 +26,7 @@ export interface WeatherData {
         lat: number;
         lon: number;
     };
+    timezone: number;
 }
 
 export interface HourlyForecastData {

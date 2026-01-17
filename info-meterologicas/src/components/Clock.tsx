@@ -1,12 +1,14 @@
 import React from 'react';
 import { useDateTime } from '../hooks/useDateTime';
+import { useWeatherStore } from '../store/weatherStore';
 
 /**
- * Componente de Relógio que exibe Horas, Minutos e Segundos.
- * Extraído para evitar re-renderizações desnecessárias do componente principal.
+ * Clock Component
+ * Displays Hours, Minutes, and Seconds synchronized with the searched city's timezone.
  */
 const Clock: React.FC = () => {
-    const { hours, minutes, seconds } = useDateTime();
+    const { weatherData } = useWeatherStore();
+    const { hours, minutes, seconds } = useDateTime(weatherData?.timezone);
 
     return (
         <div className="clock-display">
