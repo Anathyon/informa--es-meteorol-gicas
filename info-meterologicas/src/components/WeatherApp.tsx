@@ -13,6 +13,8 @@ import WeatherForecast from './WeatherForecast';
 import InteractiveMap from './InteractiveMap';
 import Clock from './Clock';
 import TemperatureChart from './TemperatureChart';
+import SolarCycle from './SolarCycle';
+import MoonPhase from './MoonPhase';
 
 // Store
 import { useWeatherStore } from '../store/weatherStore';
@@ -275,6 +277,18 @@ const WeatherApp: React.FC = () => {
                         {/* Chart Card */}
                         <div className="glass-card chart-card-full">
                             <TemperatureChart data={hourlyForecast} visualTheme={visualTheme} />
+                        </div>
+
+                        <div className="content-grid-wrapper">
+                            <div className="glass-card">
+                                <SolarCycle 
+                                    sunrise={weatherData.sys.sunrise} 
+                                    sunset={weatherData.sys.sunset} 
+                                />
+                            </div>
+                            <div className="glass-card">
+                                <MoonPhase />
+                            </div>
                         </div>
 
                         <div className="content-grid-wrapper">

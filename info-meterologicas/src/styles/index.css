@@ -941,3 +941,107 @@ body {
     font-size: 1.2rem;
     color: var(--letter-color);
 }
+
+/* Solar Cycle and Moon Phase Components */
+.solar-cycle-container, .moon-phase-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+    color: var(--letter-color);
+}
+
+.solar-arc-wrapper {
+    position: relative;
+    width: 200px;
+    height: 100px; /* Semi-circle */
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.solar-arc {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 2px dashed rgba(var(--border-rgb), 0.3);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.sun-icon-path {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, #ffcc00, #ff9900);
+    border-radius: 50%;
+    box-shadow: 0 0 15px #ffcc00;
+    z-index: 2;
+    transform: translate(-50%, -50%); /* Center the sun on the point */
+    transition: left 1s ease-in-out, top 1s ease-in-out;
+}
+
+.solar-times {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 250px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.time-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.moon-visual {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background: #dddddd;
+    border-radius: 50%;
+    box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2), 0 0 15px rgba(255,255,255,0.3);
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.moon-phase-info {
+    text-align: center;
+}
+
+.moon-phase-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    display: block;
+}
+
+.moon-phase-details {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Specific moon visual effects */
+.moon-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    transition: all 0.5s ease;
+}
+
+/* Animation for the sun and moon items */
+.solar-cycle-container {
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
