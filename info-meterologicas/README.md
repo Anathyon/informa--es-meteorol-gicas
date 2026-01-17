@@ -1,69 +1,123 @@
-# React + TypeScript + Vite
+# 🌤 App de Previsão do Tempo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação moderna e responsiva desenvolvida em **TypeScript + React**, hospedada na **Vercel**, que fornece informações meteorológicas em tempo real para qualquer localidade do mundo.  
+O projeto combina **dados confiáveis**, **temas dinâmicos** e **design responsivo**, garantindo uma experiência envolvente em todos os dispositivos.  
 
-Currently, two official plugins are available:
+> 🚀 Uma aplicação interativa, performática e projetada com boas práticas de frontend.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 📌 Funcionalidades
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- ✅ **Clima Atual** com informações detalhadas  
+- ✅ **Previsão horária e para 7 dias**  
+- ✅ **Geolocalização automática** para detectar a cidade atual  
+- ✅ **Pesquisa dinâmica** de qualquer cidade do mundo  
+- ✅ **Pesquisa por Voz** integrada para maior acessibilidade
+- ✅ **Temas visuais dinâmicos** (manhã, tarde, noite)  
+- ✅ **Histórico de buscas** com opção de limpar registros  
+- ✅ **Mapas interativos** integrados via Leaflet com camadas de:
+    - 🌡️ Temperatura (Heatmap)
+    - 🌧️ Precipitação (Chuva)
+    - 💨 Vento
+    - ⏲️ Pressão Atmosférica
+- ✅ **Ciclo Solar**: Visualização dinâmica do movimento do sol
+- ✅ **Fases da Lua**: Cálculo e visualização da fase lunar atual
+- ✅ **Sincronização de Fuso Horário**: Relógio sempre atualizado com a hora local da cidade pesquisada
+- ✅ **Qualidade do ar** com índice AQI e poluentes  
+- ✅ **Validação de entrada** com mensagens de erro claras  
+- ✅ **Design responsivo** (mobile, tablet e desktop)  
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🧪 Tecnologias Utilizadas
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Ferramenta | Descrição |
+|------------|-----------|
+| [TypeScript](https://www.typescriptlang.org/) | Lógica e tipagem estática |
+| [React](https://react.dev/) | Criação da interface com componentes reutilizáveis |
+| [React-Leaflet](https://react-leaflet.js.org/) | Mapas interativos integrados |
+| [Bootstrap](https://getbootstrap.com/) | Layout ágil e responsividade |
+| [Zustand](https://zustand-demo.pmnd.rs/) | Gerenciamento de estado global com persistência |
+| [Framer Motion](https://www.framer.com/motion/) | Animações suaves e interativas |
+| [OpenWeatherMap API](https://openweathermap.org/) | Dados meteorológicos e astronômicos |
+| [Unsplash API](https://unsplash.com/developers) | Imagens de fundo dinâmicas por cidade |
+| [Vite](https://vitejs.dev/) | Build rápido e otimizado |
+| [Vercel](https://vercel.com/) | Deploy contínuo e hospedagem web |
+
+---
+
+## �️ Layout Responsivo
+
+> 💻 Desktop | 📱 Mobile
+
+| Desktop             | Mobile              |
+|---------------------|---------------------|
+<div align="center">
+  <img src="https://github.com/Anathyon/informa--es-meteorol-gicas/blob/main/info-meterologicas/public/assets/app-desktop.png" width="400" alt="Versão Desktop" />
+  <img src="https://github.com/Anathyon/informa--es-meteorol-gicas/blob/main/info-meterologicas/public/assets/app-mobile.jpg" width="250" alt="Versão Mobile" />
+</div>
+
+---
+
+## 🎨 Temas Dinâmicos
+
+O sistema adapta automaticamente o **tema visual** conforme o horário local:  
+
+| Manhã ☀️ | Tarde 🌇 | Noite 🌙 |
+|----------|----------|----------|
+| Cores claras e vibrantes | Tons quentes e equilibrados | Fundo escuro e elegante |
+
+---
+
+## 🌐 Deploy Online
+
+> ✅ O projeto está disponível online!
+
+[🔗 Acesse agora na Vercel](https://informa-es-meteorol-gicas.vercel.app/)
+
+---
+
+## 📦 Instalação Local
+
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/app-do-clima.git
+cd info-meterologicas
+
+# Instale as dependências
+npm install
+
+# Configure as chaves da API (arquivo .env)
+VITE_OPENWEATHERMAP_API_KEY=sua_chave_aqui
+VITE_UNSPLASH_API_KEY=sua_chave_aqui
+
+# Execute em modo de desenvolvimento
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Acesse em: `http://localhost:5173`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🔒 Segurança
+
+- Uso de **variáveis de ambiente** para armazenar as chaves de API  
+- Nenhum dado sensível é armazenado no cliente  
+- Geolocalização apenas com **consentimento do usuário**  
+
+---
+
+## 🤝 Contribuições
+
+Contribuições são bem-vindas!  
+Abra uma **issue** ou **pull request** com sugestões, melhorias ou correções.  
+
+---
+
+## 👨💻 Autor
+
+Desenvolvido com dedicação por: **Anathyon Erysson**  
+📫 anathyonerysson@protonmail.com  
+🔗 [LinkedIn](https://www.linkedin.com/in/anathyonerysson/)
+
