@@ -275,7 +275,7 @@ const WeatherApp: React.FC = () => {
                         </div>
 
                         {/* Chart Card */}
-                        <div className="glass-card chart-card-full">
+                        <div className="glass-card chart-card-full mb-4">
                             <TemperatureChart data={hourlyForecast} visualTheme={visualTheme} />
                         </div>
 
