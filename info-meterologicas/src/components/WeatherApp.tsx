@@ -343,12 +343,14 @@ const WeatherApp: React.FC = () => {
                         value={citySearchInput}
                         onChange={(e) => setCitySearchInput(e.target.value)}
                     />
-                     <button type="button" className="glass-button me-2" onClick={handleVoiceClick} title="Pesquisa por voz">
-                        <i className="bi bi-mic p-2"></i>
-                    </button>
-                    <button type="submit" className="glass-button">
-                        <i className="bi bi-search icon-color"></i>
-                    </button>
+                    <div className="search-actions">
+                        <button type="button" className="glass-button" onClick={handleVoiceClick} title="Pesquisa por voz">
+                            <i className="bi bi-mic p-2"></i>
+                        </button>
+                        <button type="submit" className="glass-button">
+                            <i className="bi bi-search icon-color"></i>
+                        </button>
+                    </div>
                 </form>
 
                 <div className="d-flex justify-content-center gap-2 mt-3">

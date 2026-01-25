@@ -260,6 +260,13 @@ body {
     opacity: 0.7;
 }
 
+.search-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Replaces bootstrap me-2 */
+    margin-right: 0.5rem; /* Little margin from the edge */
+}
+
 .glass-button {
     background: var(--background);
     color: var(--letter-color);
@@ -775,35 +782,43 @@ body {
     /* Correção para a barra de pesquisa */
     .glass-search-bar {
         display: flex;
-        flex-direction: row; /* Volta a ser uma linha */
-        align-items: center; /* Alinha o input e o botão */
+        flex-direction: column; /* Coluna para mobile */
+        align-items: center; 
         width: 100%;
         max-width: none;
         background: var(--bg-destaque);
-        border-radius: 50rem;
-        padding: 0.3125rem;
+        border-radius: 1.5rem; /* Mais arredondado para bloco vertical */
+        padding: 1rem;
         margin-top: 1rem;
     }
 
     .glass-input {
-        padding: 0.625rem 1.25rem;
+        padding: 0.8rem 1rem;
         font-size: 1rem;
-        flex-grow: 1; /* O input ocupa o espaço restante */
+        width: 100%; /* Largura total */
+        text-align: center; /* Texto centralizado fica bom em mobile */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separador sutil */
+        margin-bottom: 0.5rem;
+    }
+
+    .search-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        width: 100%;
+        margin-top: 0.5rem;
     }
 
     .glass-button {
-        /* Garante que o botão tenha o tamanho e forma desejados */
-        width: 2.5rem;
-        height: 2.5rem;
-        padding: 5%;
+        width: 3rem;
+        height: 3rem;
         border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-right: 10%;
-        position: relative;
-        right: 8%;
+        font-size: 1.2rem;
     }
+
 
     .glass-button-wrapper {
         display: flex;
